@@ -1,0 +1,207 @@
+<ion-view title="Take">
+  <ion-content padding="false" scroll="true" class="has-header tab_content">
+
+    <!--Meal Buttons-->
+    <div class="row meal_buttons">
+      <div class="col col-top" style="padding: 0;">
+        <div class="button-bar">
+          <!--Breakfast btn-->
+          <div class="button bar_btn"
+               style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
+               ng-click="question('B')"
+               ng-disabled="status.meals.b.o_number
+                            || (status.meals.b.q_today && status.meals.b.sec_left > 0)
+                            || (status.meals.b.q_tomorrow && status.meals.b.sec_left <= 0)"
+               ng-class="{
+                            'button-balanced': status.meals.b.sec_left > 0 && !status.meals.b.o_number,
+                            'button-stable': status.meals.b.o_number && status.meals.b.o_number != '*****',
+                            'button-assertive': status.meals.b.o_number == '*****',
+                            'button-energized': status.meals.b.sec_left <= 0 && !status.meals.b.o_number}"
+          >
+            <strong>Breakfast!</strong>
+            <div ng-if="status.meals.b.sec_left > 0">
+              <sup>for today</sup>
+            </div>
+            <div ng-if="status.meals.b.sec_left <= 0">
+              <sup>for tomorrow</sup>
+            </div>
+            <div class="item-text-wrap" ng-if="status.meals.b.o_number">
+              <p style="margin: 0;"><strong style="color: black">{{status.meals.b.o_number}}</strong></p>
+            </div>
+            <div ng-if="!status.meals.b.o_number">
+              <sup>{{status.meals.b.sec_left | secondsToDateTime}}</sup>
+            </div>
+            <sup class="offers_count">{{status.meals.b.offers}}</sup>
+            <md-progress-linear md-mode="determinate" value="{{status.meals.b.progress}}"></md-progress-linear>
+          </div>
+
+          <!--Lunch btn-->
+          <div class="button bar_btn"
+               style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
+               ng-click="question('L')"
+               ng-disabled="status.meals.l.o_number
+                            || (status.meals.l.q_today && status.meals.l.sec_left > 0)
+                            || (status.meals.l.q_tomorrow && status.meals.l.sec_left <= 0)"
+               ng-class="{
+                            'button-balanced': status.meals.l.sec_left > 0 && !status.meals.l.o_number,
+                            'button-stable': status.meals.l.o_number && status.meals.l.o_number != '*****',
+                            'button-assertive': status.meals.l.o_number == '*****',
+                            'button-energized': status.meals.l.sec_left <= 0 && !status.meals.l.o_number}"
+          >
+            <strong>Lunch!</strong>
+            <div ng-if="status.meals.l.sec_left > 0">
+              <sup>for today</sup>
+            </div>
+            <div ng-if="status.meals.l.sec_left <= 0">
+              <sup>for tomorrow</sup>
+            </div>
+            <div class="item-text-wrap" ng-if="status.meals.l.o_number">
+              <p style="margin: 0;"><strong style="color: black">{{status.meals.l.o_number}}</strong></p>
+            </div>
+            <div ng-if="!status.meals.l.o_number">
+              <sup>{{status.meals.l.sec_left | secondsToDateTime}}</sup>
+            </div>
+            <sup class="offers_count">{{status.meals.l.offers}}</sup>
+            <md-progress-linear md-mode="determinate" value="{{status.meals.l.progress}}"></md-progress-linear>
+          </div>
+
+          <!--Dinner btn-->
+          <div class="button bar_btn"
+               style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
+               ng-click="question('D')"
+               ng-disabled="status.meals.d.o_number
+                            || (status.meals.d.q_today && status.meals.d.sec_left > 0)
+                            || (status.meals.d.q_tomorrow && status.meals.d.sec_left <= 0)"
+               ng-class="{
+                            'button-balanced': status.meals.d.sec_left > 0 && !status.meals.d.o_number,
+                            'button-stable': status.meals.d.o_number && status.meals.d.o_number != '*****',
+                            'button-assertive': status.meals.d.o_number == '*****',
+                            'button-energized': status.meals.d.sec_left <= 0 && !status.meals.d.o_number}"
+          >
+            <strong>Dinner!</strong>
+            <div ng-if="status.meals.d.sec_left > 0">
+              <sup>for today</sup>
+            </div>
+            <div ng-if="status.meals.d.sec_left <= 0">
+              <sup>for tomorrow</sup>
+            </div>
+            <div class="item-text-wrap" ng-if="status.meals.d.o_number">
+              <p style="margin: 0;"><strong style="color: black">{{status.meals.d.o_number}}</strong></p>
+            </div>
+            <div ng-if="!status.meals.d.o_number">
+              <sup>{{status.meals.d.sec_left | secondsToDateTime}}</sup>
+            </div>
+            <sup class="offers_count">{{status.meals.d.offers}}</sup>
+            <md-progress-linear md-mode="determinate" value="{{status.meals.d.progress}}"></md-progress-linear>
+          </div>
+        </div>
+        <div class="row take_status">
+          <!--Breakfast status-->
+          <div class="col">
+            <div class="item-text-wrap" ng-if="status.meals.b.o_number && status.meals.b.o_number != '*****'">
+              Now it's yours, enjoy it! :)
+            </div>
+            <div class="item-text-wrap" ng-if="status.meals.b.o_number && status.meals.b.o_number == '*****'">
+              Number found!
+              You take it ?
+              <a href="" class="button button-clear button-balanced t_clear_btn"
+                 ng-click="confirm('B')"><strong>YES!</strong></a>
+              <a href="" class="button button-clear button-assertive t_clear_btn"
+                 ng-click="reject('B')"><strong>NO</strong></a>
+            </div>
+            <div ng-if="!status.meals.b.o_number && (status.meals.b.sec_left > 0 && status.meals.b.q_today
+                        || status.meals.b.sec_left <= 0 && status.meals.b.q_tomorrow)">
+              <span style="color: #cecece;">Pending..</span>
+              <a href="" class="button button-clear button-calm t_clear_btn"
+                 ng-click="cancel('B')">CANCEL
+              </a>
+            </div>
+          </div>
+
+          <!--Lunch status-->
+          <div class="col">
+            <div class="item-text-wrap" ng-if="status.meals.l.o_number && status.meals.l.o_number != '*****'">
+              Now it's yours, enjoy it! :)
+            </div>
+            <div class="item-text-wrap" ng-if="status.meals.l.o_number && status.meals.l.o_number == '*****'">
+              Number found!
+              You take it ?
+              <a href="" class="button button-clear button-balanced t_clear_btn"
+                 ng-click="confirm('L')"><strong>YES!</strong></a>
+              <a href="" class="button button-clear button-assertive t_clear_btn"
+                 ng-click="reject('L')"><strong>NO</strong></a>
+            </div>
+            <div ng-if="!status.meals.l.o_number && (status.meals.l.sec_left > 0 && status.meals.l.q_today
+                        || status.meals.l.sec_left <= 0 && status.meals.l.q_tomorrow)">
+              <span style="color: #cecece;">Pending..</span>
+              <a href="" class="button button-clear button-calm t_clear_btn"
+                 ng-click="cancel('L')">CANCEL
+              </a>
+            </div>
+          </div>
+
+          <!--Dinner status-->
+          <div class="col">
+            <div class="item-text-wrap" ng-if="status.meals.d.o_number && status.meals.d.o_number != '*****'">
+              Now it's yours, enjoy it! :)
+            </div>
+            <div class="item-text-wrap" ng-if="status.meals.d.o_number && status.meals.d.o_number == '*****'">
+              Number found!
+              You take it ?
+              <a href="" class="button button-clear button-balanced t_clear_btn"
+                 ng-click="confirm('D')"><strong>YES!</strong></a>
+              <a href="" class="button button-clear button-assertive t_clear_btn"
+                 ng-click="reject('D')"><strong>NO</strong></a>
+            </div>
+            <div ng-if="!status.meals.d.o_number && (status.meals.d.sec_left > 0 && status.meals.d.q_today
+                        || status.meals.d.sec_left <= 0 && status.meals.d.q_tomorrow)">
+              <span style="color: #cecece;">Pending..</span>
+              <a href="" class="button button-clear button-calm t_clear_btn"
+                 ng-click="cancel('D')">CANCEL
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Priority-->
+    <div class="row">
+      <!--Breakfast queue-->
+      <div class="col" style="padding: 0;">
+        <div class="card queue_card" ng-repeat="data in status.priority.b">
+          <div class="item item-text-wrap item-divider queue_item_divider">
+            {{$index+1}}) {{data.name}} {{data.surname}}
+          </div>
+          <div class="item item-text-wrap queue_item">
+            <strong>Ask: {{data.day}} at {{data.time}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!--Lunch queue-->
+      <div class="col" style="padding: 0;">
+        <div class="card queue_card" ng-repeat="data in status.priority.l">
+          <div class="item item-text-wrap item-divider queue_item_divider">
+            {{data.name}} {{data.surname}}
+          </div>
+          <div class="item item-text-wrap queue_item">
+            <strong>Ask: {{data.day}} at {{data.time}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!--Dinner queue-->
+      <div class="col" style="padding: 0;">
+        <div class="card queue_card" ng-repeat="data in status.priority.d">
+          <div class="item item-text-wrap item-divider queue_item_divider">
+            {{data.name}} {{data.surname}}
+          </div>
+          <div class="item item-text-wrap queue_item">
+            <strong>Ask: {{data.day}} at {{data.time}}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,13 @@
+<ion-view>
+    <ion-tabs class="tabs-stable tabs-icon-top">
+        <ion-tab ng-if="menuTabActive" title="MENU" icon="ion-pizza" href="#/tab/menu">
+            <ion-nav-view name="menu-tab"></ion-nav-view>
+        </ion-tab>
+        <ion-tab ng-if="takeTabActive" title="TAKE" icon="ion-android-add-circle" href="#/tab/take">
+            <ion-nav-view name="take-tab"></ion-nav-view>
+        </ion-tab>
+        <ion-tab ng-if="giveTabActive" title="GIVE" icon="ion-android-remove-circle" href="#/tab/give">
+            <ion-nav-view name="give-tab"></ion-nav-view>
+        </ion-tab>
+    </ion-tabs>
+</ion-view>
