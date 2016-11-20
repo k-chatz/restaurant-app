@@ -325,3 +325,15 @@ a.tab-item{
   background-color: rgba(255, 0, 0, 0);
 
 }
+
+md-radio-button .md-off, md-radio-button .md-on {
+  border-radius: 30%;
+}
+
+md-radio-button {
+  margin-bottom: 0px;
+}
+
+md-checkbox {
+  margin-bottom: 3px;
+}

@@ -191,22 +191,37 @@ angular.module('restaurant.services', [])
       time: null,
       meals: {
         b: {
-          b_offer_room: null,
-          b_sec_left: null,
-          b_q_today: null,
-          b_q_tomorrow: null
+          o_number: null,
+          sec_left: null,
+          q_today: null,
+          q_tomorrow: null,
+          q_username: null,
+          questions: null,
+          o_today: null,
+          o_tomorrow: null,
+          offers: null
         },
         l: {
-          l_offer_room: null,
-          l_sec_left: null,
-          l_q_today: null,
-          l_q_tomorrow: null
+          o_number: null,
+          sec_left: null,
+          q_today: null,
+          q_tomorrow: null,
+          q_username: null,
+          questions: null,
+          o_today: null,
+          o_tomorrow: null,
+          offers: null
         },
         d: {
-          d_offer_room: null,
-          d_sec_left: null,
-          d_q_today: null,
-          d_q_tomorrow: null
+          o_number: null,
+          sec_left: null,
+          q_today: null,
+          q_tomorrow: null,
+          q_username: null,
+          questions: null,
+          o_today: null,
+          o_tomorrow: null,
+          offers: null
         }
       },
       priority: {
@@ -338,6 +353,8 @@ angular.module('restaurant.services', [])
     service.offer = offer;
     service.offers = offers;
     service.cancel = cancel;
+    service.confirm = confirm;
+    service.reject = reject;
     return service;
 
     function offer(meal) {
@@ -367,7 +384,29 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/offer/cancel',
+        url: host + '/v1/give/cancel',
+        headers: {'Content-Type': 'application/json'},
+        data: {meal: meal}
+      }).then(handleSuccess, handleError('Error'));
+    }
+
+    function confirm(meal) {
+      return $http({
+        method: 'POST',
+        cache: false,
+        crossDomain: true,
+        url: host + '/v1/give/confirm',
+        headers: {'Content-Type': 'application/json'},
+        data: {meal: meal}
+      }).then(handleSuccess, handleError('Error'));
+    }
+
+    function reject(meal) {
+      return $http({
+        method: 'POST',
+        cache: false,
+        crossDomain: true,
+        url: host + '/v1/give/reject',
         headers: {'Content-Type': 'application/json'},
         data: {meal: meal}
       }).then(handleSuccess, handleError('Error'));
@@ -387,5 +426,3 @@ angular.module('restaurant.services', [])
   .config(function ($httpProvider) {
     $httpProvider.interceptors.push('AuthInterceptor');
   });
-
-
