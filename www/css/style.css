@@ -49,7 +49,7 @@ ion-nav-view.view-container {
 }
 
 ion-view.pane {
-  background: rgb(14, 76, 82);
+  background: rgb(0, 0, 0);
 }
 
 .bar.bar-stable {
@@ -77,7 +77,7 @@ ion-view.pane {
 /*Header bar*/
 [nav-bar-transition="ios"] [nav-bar="active"] .bar, [nav-bar-transition="ios"] [nav-bar="entering"] .bar {
   background: transparent;
-  background-color: #0e4c52;
+  background-color: #1d1f20;
   border-color: #434343;
 }
 
@@ -93,7 +93,7 @@ ion-view.pane {
 .tab_content {
   text-align: center;
   /* background: url(../img/df49996a.png); */
-  background-color: #20a9b5;
+  background-color: #343436;
 }
 
 #take_logo {
@@ -141,6 +141,14 @@ ion-view.pane {
   font-family: fantasy;
 }
 
+
+.pending_status{
+  float: left;
+  color: rgba(0, 0, 0, 0.4);
+  font-family: fantasy;
+}
+
+
 .header_title{
   color: #ffffff;
   /* border: 1px solid rgb(0, 0, 0); */
@@ -157,14 +165,14 @@ ion-view.pane {
 }
 
 .col.col-top {
-  background: rgba(0,0,0,0.55);
+  background: #1d1f20;
   /* border: 1px; */
   margin-bottom: 5px;
   border-style: ridge;
   min-height: 144px;
-  border-bottom: 2px;
+  border-bottom: 1px;
   border-style: solid;
-  border-color: rgba(255, 201, 0, 0.8);
+  border-color: rgba(90, 90, 90, 0.8);
   border-radius: 0px;
   /* box-shadow: 0px 0px 2px 2px rgba(255, 255, 255, 0.1); */
 }
@@ -224,11 +232,12 @@ md-progress-linear.md-default-theme .md-container, md-progress-linear .md-contai
   overflow: hidden;
   margin: 4px 2px 0px 2px;
   border-radius: 2px;
-  background-color: rgb(40, 40, 40);
+  background-color: rgb(29, 31, 32);
   /* padding-top: 1px; */
   /* padding-bottom: 1px; */
-  border: 1px solid #313131;
-  /* box-shadow: 0px 0px 1px 0px rgba(255, 255, 255, 0.3); */
+  /* border: 1px solid #313131; */
+  border: 1px solid #000000;
+  box-shadow: 0px 0px 1px 0px rgba(255, 255, 255, 0.3);
   color: white;
 }
 
@@ -236,7 +245,7 @@ md-progress-linear.md-default-theme .md-container, md-progress-linear .md-contai
   padding: 0px;
   min-height: 20px;
   font-size: 9px;
-  background-color: rgb(40, 40, 40);
+  background-color: rgb(29, 31, 32);
   color: #cecece;
   border: 0px solid rgba(0, 0, 0, 0.04);
 }
@@ -260,10 +269,10 @@ md-progress-linear.md-default-theme .md-container, md-progress-linear .md-contai
 }
 
 .tabs-stable > .tabs, .tabs.tabs-stable {
-  border-color: rgba(255, 201, 0, 0.8);
-  border-top-width: 2px;
-  background-color: rgb(14, 76, 82);
-  background-image: linear-gradient(0deg, #ff7200, #ffd400 50%, rgb(254, 255, 0) 50%);
+  border-color: rgba(90, 90, 90, 0.8);
+  border-top-width: 1px;
+  background-color: rgb(29, 31, 32);
+  background-image: linear-gradient(0deg, rgba(65, 65, 65, 0.8), rgba(65, 65, 65, 0.8) 50%, rgba(65, 65, 65, 0.8) 50%);
   color: #444;
 }
 
@@ -297,18 +306,18 @@ a.tab-item{
   padding-top: 0;
   padding-bottom: 0;
   min-height: 15px;
-  background-color: #173d3e;
+  background-color: #1d1f20;
   color: #ffffff;
   font-weight: 500;
-  box-shadow: 2px 1px 5px 2px rgb(52, 109, 111);
+  box-shadow: 0px 1px 2px 0px rgb(29, 31, 32);
 }
 
 .gm_item{
   overflow: hidden;
-  margin: 1px;
+  margin: 2px;
   border-radius: 2px;
-  background-color: rgb(40, 40, 40);
-  border: 1px solid #313131;
+  background-color: rgb(29, 31, 32);
+  border: 1px solid #000000;
   color: white;
 }
 

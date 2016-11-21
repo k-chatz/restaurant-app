@@ -29,8 +29,15 @@
               <p style="margin: 0;"><strong style="color: black">{{status.meals.b.o_number}}</strong></p>
             </div>
             <div ng-if="!status.meals.b.o_number">
-              <sup>{{status.meals.b.sec_left | secondsToDateTime}}</sup>
+              <sup style="top: -11px;">{{status.meals.b.sec_left | secondsToDateTime}}</sup>
             </div>
+            <sup
+              ng-if="!status.meals.b.o_number && (status.meals.b.sec_left > 0 && status.meals.b.q_today
+                        || status.meals.b.sec_left <= 0 && status.meals.b.q_tomorrow)"
+              class="pending_status"
+            >
+              Pending..
+            </sup>
             <sup class="offers_count">{{status.meals.b.offers}}</sup>
             <md-progress-linear md-mode="determinate" value="{{status.meals.b.progress}}"></md-progress-linear>
           </div>
@@ -59,8 +66,15 @@
               <p style="margin: 0;"><strong style="color: black">{{status.meals.l.o_number}}</strong></p>
             </div>
             <div ng-if="!status.meals.l.o_number">
-              <sup>{{status.meals.l.sec_left | secondsToDateTime}}</sup>
+              <sup style="top: -11px;">{{status.meals.l.sec_left | secondsToDateTime}}</sup>
             </div>
+            <sup
+              ng-if="!status.meals.l.o_number && (status.meals.l.sec_left > 0 && status.meals.l.q_today
+                        || status.meals.l.sec_left <= 0 && status.meals.l.q_tomorrow)"
+              class="pending_status"
+            >
+              Pending..
+            </sup>
             <sup class="offers_count">{{status.meals.l.offers}}</sup>
             <md-progress-linear md-mode="determinate" value="{{status.meals.l.progress}}"></md-progress-linear>
           </div>
@@ -89,8 +103,15 @@
               <p style="margin: 0;"><strong style="color: black">{{status.meals.d.o_number}}</strong></p>
             </div>
             <div ng-if="!status.meals.d.o_number">
-              <sup>{{status.meals.d.sec_left | secondsToDateTime}}</sup>
+              <sup style="top: -11px;">{{status.meals.d.sec_left | secondsToDateTime}}</sup>
             </div>
+            <sup
+              ng-if="!status.meals.d.o_number && (status.meals.d.sec_left > 0 && status.meals.d.q_today
+                        || status.meals.d.sec_left <= 0 && status.meals.d.q_tomorrow)"
+              class="pending_status"
+            >
+              Pending..
+            </sup>
             <sup class="offers_count">{{status.meals.d.offers}}</sup>
             <md-progress-linear md-mode="determinate" value="{{status.meals.d.progress}}"></md-progress-linear>
           </div>
@@ -111,7 +132,6 @@
             </div>
             <div ng-if="!status.meals.b.o_number && (status.meals.b.sec_left > 0 && status.meals.b.q_today
                         || status.meals.b.sec_left <= 0 && status.meals.b.q_tomorrow)">
-              <span style="color: #cecece;">Pending..</span>
               <a href="" class="button button-clear button-calm t_clear_btn"
                  ng-click="cancel('B')">CANCEL
               </a>
@@ -133,7 +153,6 @@
             </div>
             <div ng-if="!status.meals.l.o_number && (status.meals.l.sec_left > 0 && status.meals.l.q_today
                         || status.meals.l.sec_left <= 0 && status.meals.l.q_tomorrow)">
-              <span style="color: #cecece;">Pending..</span>
               <a href="" class="button button-clear button-calm t_clear_btn"
                  ng-click="cancel('L')">CANCEL
               </a>
@@ -155,7 +174,6 @@
             </div>
             <div ng-if="!status.meals.d.o_number && (status.meals.d.sec_left > 0 && status.meals.d.q_today
                         || status.meals.d.sec_left <= 0 && status.meals.d.q_tomorrow)">
-              <span style="color: #cecece;">Pending..</span>
               <a href="" class="button button-clear button-calm t_clear_btn"
                  ng-click="cancel('D')">CANCEL
               </a>
