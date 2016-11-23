@@ -243,7 +243,8 @@ angular.module('restaurant.controllers', [])
           b: [],
           l: [],
           d: []
-        }
+        },
+        offersByDate: []
       };
       /*Give buttons*/
       function progress(B, L, D) {
@@ -264,6 +265,7 @@ angular.module('restaurant.controllers', [])
         }, function (data) {
           if (data.time != null && data.success != false) {
             $scope.status = data;
+            $scope.offersByDate = $scope.status.offersByDate;
             progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
           }
         }, true);
@@ -285,10 +287,10 @@ angular.module('restaurant.controllers', [])
           Status.refresh();
         });
       };
-      $scope.confirm = function (meal) {
-        Give.confirm(meal).then(function (response) {
-          Status.refresh();
-        });
+      $scope.confirm = function (meal,status, date) {
+          Give.confirm(meal, status == null ? -1 : status, date).then(function (response) {
+            Status.refresh();
+          });
       };
       $scope.reject = function (meal) {
         Give.reject(meal).then(function (response) {
@@ -296,10 +298,8 @@ angular.module('restaurant.controllers', [])
         });
       };
 
-
-
       /*Give more..*/
-      $scope.selectedDates = [];
+      $scope.offersByDate = [];
       var startDate = new Date();
       var endDate = new Date();
       var monthRange = 1;
@@ -340,28 +340,24 @@ angular.module('restaurant.controllers', [])
         errorLanguage: 'EN',
         fromDate: startDate,
         toDate: endDate,
-        selectedDates: $scope.selectedDates,
+        selectedDates: $scope.offersByDate,
         disablepreviousdates: true,
         conflictSelectedDisabled: 'DISABLED', // SELECTED | DISABLED
         closeOnSelect: false,
         mondayFirst: true,
         weekDaysList: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
         monthList: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        callback: function (dates) {
-          $scope.selectedDates.length = 0;
-          for (var i = 0; i < dates.length; i++) {
-            $scope.selectedDates.push(angular.copy(dates[i]));
-          }
-        }
+        callback: setMoreOffer
       };
-      $scope.give = {};
-      $scope.give.b = true;
-      $scope.give.l = true;
-      $scope.give.d = true;
 
+      function setMoreOffer(dates){
+        $scope.offersByDate.length = 0;
+        for (var i = 0; i < dates.length; i++) {
+          $scope.offersByDate.push(angular.copy(dates[i]));
+        }
+      }
 
     }]);
-
 
 
 

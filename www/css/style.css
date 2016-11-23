@@ -40,7 +40,7 @@ ion-list.manual-list-fullwidth div.list > .item, .list.card.manual-card-fullwidt
   border-color: rgba(255, 255, 255, 0.1);
   background-color: #f8f8f8;
   background-image: linear-gradient(0deg, #b2b2b2, #b2b2b2 50%, transparent 50%);
-  background-image: linear-gradient(0deg, #ff7200, #ffd400 50%, rgb(254, 255, 0) 50%);
+  /* background-image: linear-gradient(0deg, #ff7200, #ffd400 50%, rgb(254, 255, 0) 50%); */
   color: #444;
 }
 
@@ -54,7 +54,7 @@ ion-view.pane {
 
 .bar.bar-stable {
   /* border-color: #434343; */
-  background-color: rgba(47, 123, 124, 0.5);
+  background-color: rgb(29, 31, 32);
 }
 
 .bar-stable .button.button-clear {

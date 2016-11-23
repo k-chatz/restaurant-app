@@ -129,8 +129,9 @@
             </div>
 
             <md-checkbox
-              ng-if="!status.meals.b.q_username"
-              md-indeterminate="status.meals.b.o_confirm == null"
+              ng-if="(status.meals.b.sec_left > 0 && status.meals.b.o_today
+                        || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)"
+              md-indeterminate="status.meals.b.o_confirm == 0"
               ng-disabled="status.meals.b.o_confirm == 1 || !(status.meals.b.sec_left > 0 && status.meals.b.o_today
                         || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)"
               ng-checked="status.meals.b.o_confirm"
@@ -146,7 +147,7 @@
             </div>
 
 
-            <div ng-if="!status.meals.b.o_confirm && !status.meals.b.q_username && (status.meals.b.sec_left > 0 && status.meals.b.o_today
+            <div ng-if="!status.meals.b.q_username && (status.meals.b.sec_left > 0 && status.meals.b.o_today
                         || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)">
               <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('B')">CANCEL</a>
             </div>
@@ -161,8 +162,9 @@
             </div>
 
             <md-checkbox
-              ng-if="!status.meals.l.q_username"
-              md-indeterminate="status.meals.l.o_confirm == null"
+              ng-if="(status.meals.l.sec_left > 0 && status.meals.l.o_today
+                        || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)"
+              md-indeterminate="status.meals.l.o_confirm == 0"
               ng-disabled="status.meals.l.o_confirm == 1 || !(status.meals.l.sec_left > 0 && status.meals.l.o_today
                         || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)"
               ng-checked="status.meals.l.o_confirm"
@@ -178,7 +180,7 @@
             </div>
 
 
-            <div ng-if="!status.meals.l.o_confirm && !status.meals.l.q_username && (status.meals.l.sec_left > 0 && status.meals.l.o_today
+            <div ng-if="!status.meals.l.q_username && (status.meals.l.sec_left > 0 && status.meals.l.o_today
                         || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)">
               <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('L')">CANCEL</a>
             </div>
@@ -193,8 +195,9 @@
             </div>
 
             <md-checkbox
-              ng-if="!status.meals.d.q_username"
-              md-indeterminate="status.meals.d.o_confirm == null"
+              ng-if="(status.meals.d.sec_left > 0 && status.meals.d.o_today
+                        || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)"
+              md-indeterminate="status.meals.d.o_confirm == 0"
               ng-disabled="status.meals.d.o_confirm == 1 || !(status.meals.d.sec_left > 0 && status.meals.d.o_today
                         || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)"
               ng-checked="status.meals.d.o_confirm"
@@ -210,7 +213,7 @@
             </div>
 
 
-            <div ng-if="!status.meals.d.o_confirm && !status.meals.d.q_username && (status.meals.d.sec_left > 0 && status.meals.d.o_today
+            <div ng-if="!status.meals.d.q_username && (status.meals.d.sec_left > 0 && status.meals.d.o_today
                         || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)">
               <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('D')">CANCEL</a>
             </div>
@@ -238,7 +241,7 @@
           <div class="col">
             <div class="row">
               <div class="col">
-                Dates ({{ selectedDates.length }})
+                Dates ({{ offersByDate.length }})
               </div>
             </div>
           </div>
@@ -259,30 +262,56 @@
       </div>
 
 
-      <div class="gm_item" ng-repeat="d in selectedDates">
+      <div class="gm_item" ng-repeat="day in offersByDate">
         <div class="row">
           <div class="col gm_col">
             <div class="row">
               <div class="col gm_col">
-                {{ d.getDate() }}/{{ d.getMonth() + 1 }}/{{ d.getFullYear() }}
+                {{day.date}}
               </div>
             </div>
           </div>
           <div class="col col-75 gm_col">
             <div class="row">
               <div class="col gm_col">
-                <md-checkbox class="md-warn md-align-top-left" ng-model="give.b" flex></md-checkbox>
+                <md-checkbox
+                  class="md-warn md-align-top-left"
+                  md-indeterminate = "day.b == 0"
+                  ng-checked = "day.b == 1"
+                  ng-disabled="day.b == 1"
+                  ng-click = "confirm('B', day.b, day.date)"
+                  aria-label="B"
+                  flex
+                >
+                </md-checkbox>
               </div>
               <div class="col gm_col">
-                <md-checkbox class="md-warn md-align-top-left" ng-model="give.l" flex></md-checkbox>
+                <md-checkbox
+                  class="md-warn md-align-top-left"
+                  md-indeterminate = "day.l == 0"
+                  ng-checked = "day.l == 1"
+                  ng-disabled="day.l == 1"
+                  ng-click = "confirm('L', day.l, day.date)"
+                  aria-label="L"
+                  flex
+                >
+                </md-checkbox>
               </div>
               <div class="col gm_col">
-                <md-checkbox class="md-warn md-align-top-left" ng-model="give.d" flex></md-checkbox>
+                <md-checkbox
+                  class="md-warn md-align-top-left"
+                  md-indeterminate = "day.d == 0"
+                  ng-checked = "day.d == 1"
+                  ng-disabled="day.d == 1"
+                  ng-click = "confirm('D', day.d, day.date)"
+                  aria-label="D"
+                  flex
+                >
+                </md-checkbox>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </ion-content>

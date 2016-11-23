@@ -390,14 +390,15 @@ angular.module('restaurant.services', [])
       }).then(handleSuccess, handleError('Error'));
     }
 
-    function confirm(meal) {
+    function confirm(meal, status, date) {
+      console.log(status);
       return $http({
         method: 'POST',
         cache: false,
         crossDomain: true,
         url: host + '/v1/give/confirm',
         headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        data: {meal: meal, status: parseInt(status), date: date}
       }).then(handleSuccess, handleError('Error'));
     }
 
