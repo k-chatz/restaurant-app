@@ -197,8 +197,7 @@ angular.module('restaurant.services', [])
           q_tomorrow: null,
           q_username: null,
           questions: null,
-          o_today: null,
-          o_tomorrow: null,
+          o_offer: null,
           offers: null
         },
         l: {
@@ -208,8 +207,7 @@ angular.module('restaurant.services', [])
           q_tomorrow: null,
           q_username: null,
           questions: null,
-          o_today: null,
-          o_tomorrow: null,
+          o_offer: null,
           offers: null
         },
         d: {
@@ -219,8 +217,7 @@ angular.module('restaurant.services', [])
           q_tomorrow: null,
           q_username: null,
           questions: null,
-          o_today: null,
-          o_tomorrow: null,
+          o_offer: null,
           offers: null
         }
       },
@@ -391,7 +388,6 @@ angular.module('restaurant.services', [])
     }
 
     function confirm(meal, status, date) {
-      console.log(status);
       return $http({
         method: 'POST',
         cache: false,

@@ -10,9 +10,7 @@
           <div class="button bar_btn"
                style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
                ng-click="offer('B')"
-               ng-disabled="status.meals.b.q_username
-                            || (status.meals.b.o_today && status.meals.b.sec_left > 0)
-                            || (status.meals.b.o_tomorrow && status.meals.b.sec_left <= 0)"
+               ng-disabled="status.meals.b.q_username || status.meals.b.o_offer"
                ng-class="{
                             'button-balanced': status.meals.b.sec_left > 0 && !status.meals.b.q_username,
                             'button-stable': status.meals.b.q_username && status.meals.b.q_username != '*****',
@@ -47,9 +45,7 @@
           <div class="button bar_btn"
                style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
                ng-click="offer('L')"
-               ng-disabled="status.meals.l.q_username
-                            || (status.meals.l.o_today && status.meals.l.sec_left > 0)
-                            || (status.meals.l.o_tomorrow && status.meals.l.sec_left <= 0)"
+               ng-disabled="status.meals.l.q_username || status.meals.l.o_offer"
                ng-class="{
                             'button-balanced': status.meals.l.sec_left > 0 && !status.meals.l.q_username,
                             'button-stable': status.meals.l.q_username && status.meals.l.q_username != '*****',
@@ -84,9 +80,7 @@
           <div class="button bar_btn"
                style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
                ng-click="offer('D')"
-               ng-disabled="status.meals.d.q_username
-                            || (status.meals.d.o_today && status.meals.d.sec_left > 0)
-                            || (status.meals.d.o_tomorrow && status.meals.d.sec_left <= 0)"
+               ng-disabled="status.meals.d.q_username || status.meals.d.o_offer"
                ng-class="{
                             'button-balanced': status.meals.d.sec_left > 0 && !status.meals.d.q_username,
                             'button-stable': status.meals.d.q_username && status.meals.d.q_username != '*****',
@@ -122,18 +116,13 @@
 
           <!--Breakfast status-->
           <div class="col">
-
-            <div class="item-text-wrap" style="font-size: 8px;" ng-if="status.meals.b.questions && (status.meals.b.sec_left > 0 && status.meals.b.o_today
-                        || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)">
+            <div class="item-text-wrap" style="font-size: 8px;" ng-if="status.meals.b.questions && status.meals.b.o_offer">
               There are people who ask you.. will you give?
             </div>
-
             <md-checkbox
-              ng-if="(status.meals.b.sec_left > 0 && status.meals.b.o_today
-                        || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)"
+              ng-if="status.meals.b.o_offer"
               md-indeterminate="status.meals.b.o_confirm == 0"
-              ng-disabled="status.meals.b.o_confirm == 1 || !(status.meals.b.sec_left > 0 && status.meals.b.o_today
-                        || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)"
+              ng-disabled="status.meals.b.o_confirm == 1 || !status.meals.b.o_offer"
               ng-checked="status.meals.b.o_confirm"
               aria-label="Confirm"
               class="md-warn"
@@ -141,32 +130,23 @@
             >
               Sure!
             </md-checkbox>
-
             <div class="item-text-wrap" ng-if="status.meals.b.q_username">
               Taker: {{status.meals.b.q_username}}
             </div>
-
-
-            <div ng-if="!status.meals.b.q_username && (status.meals.b.sec_left > 0 && status.meals.b.o_today
-                        || status.meals.b.sec_left <= 0 && status.meals.b.o_tomorrow)">
+            <div ng-if="!status.meals.b.q_username && status.meals.b.o_offer">
               <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('B')">CANCEL</a>
             </div>
           </div>
 
           <!--Lunch status-->
           <div class="col">
-
-            <div class="item-text-wrap" style="font-size: 8px;" ng-if="status.meals.l.questions && (status.meals.l.sec_left > 0 && status.meals.l.o_today
-                        || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)">
+            <div class="item-text-wrap" style="font-size: 8px;" ng-if="status.meals.l.questions && status.meals.l.o_offer">
               There are people who ask you.. will you give?
             </div>
-
             <md-checkbox
-              ng-if="(status.meals.l.sec_left > 0 && status.meals.l.o_today
-                        || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)"
+              ng-if="status.meals.l.o_offer"
               md-indeterminate="status.meals.l.o_confirm == 0"
-              ng-disabled="status.meals.l.o_confirm == 1 || !(status.meals.l.sec_left > 0 && status.meals.l.o_today
-                        || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)"
+              ng-disabled="status.meals.l.o_confirm == 1 || !status.meals.l.o_offer"
               ng-checked="status.meals.l.o_confirm"
               aria-label="Confirm"
               class="md-warn"
@@ -174,32 +154,23 @@
             >
               Sure!
             </md-checkbox>
-
             <div class="item-text-wrap" ng-if="status.meals.l.q_username">
               Taker: {{status.meals.l.q_username}}
             </div>
-
-
-            <div ng-if="!status.meals.l.q_username && (status.meals.l.sec_left > 0 && status.meals.l.o_today
-                        || status.meals.l.sec_left <= 0 && status.meals.l.o_tomorrow)">
+            <div ng-if="!status.meals.l.q_username && status.meals.l.o_offer">
               <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('L')">CANCEL</a>
             </div>
           </div>
 
           <!--Dinner status-->
           <div class="col">
-
-            <div class="item-text-wrap" style="font-size: 8px;" ng-if="status.meals.d.questions && (status.meals.d.sec_left > 0 && status.meals.d.o_today
-                        || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)">
+            <div class="item-text-wrap" style="font-size: 8px;" ng-if="status.meals.d.questions && status.meals.d.o_offer">
               There are people who ask you.. will you give?
             </div>
-
             <md-checkbox
-              ng-if="(status.meals.d.sec_left > 0 && status.meals.d.o_today
-                        || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)"
+              ng-if="status.meals.d.o_offer"
               md-indeterminate="status.meals.d.o_confirm == 0"
-              ng-disabled="status.meals.d.o_confirm == 1 || !(status.meals.d.sec_left > 0 && status.meals.d.o_today
-                        || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)"
+              ng-disabled="status.meals.d.o_confirm == 1 || !status.meals.d.o_offer"
               ng-checked="status.meals.d.o_confirm"
               aria-label="Confirm"
               class="md-warn"
@@ -207,14 +178,10 @@
             >
               Sure!
             </md-checkbox>
-
             <div class="item-text-wrap" ng-if="status.meals.d.q_username">
               Taker: {{status.meals.d.q_username}}
             </div>
-
-
-            <div ng-if="!status.meals.d.q_username && (status.meals.d.sec_left > 0 && status.meals.d.o_today
-                        || status.meals.d.sec_left <= 0 && status.meals.d.o_tomorrow)">
+            <div ng-if="!status.meals.d.q_username && status.meals.d.o_offer">
               <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('D')">CANCEL</a>
             </div>
           </div>

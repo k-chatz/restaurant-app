@@ -212,8 +212,7 @@ angular.module('restaurant.controllers', [])
             q_tomorrow: null,
             q_username: null,
             questions: null,
-            o_today: null,
-            o_tomorrow: null,
+            o_offer: null,
             offers: null
           },
           l: {
@@ -223,8 +222,7 @@ angular.module('restaurant.controllers', [])
             q_tomorrow: null,
             q_username: null,
             questions: null,
-            o_today: null,
-            o_tomorrow: null,
+            o_offer: null,
             offers: null
           },
           d: {
@@ -234,8 +232,7 @@ angular.module('restaurant.controllers', [])
             q_tomorrow: null,
             q_username: null,
             questions: null,
-            o_today: null,
-            o_tomorrow: null,
+            o_offer: null,
             offers: null
           }
         },
