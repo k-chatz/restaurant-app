@@ -229,7 +229,11 @@
       </div>
 
 
-      <div class="gm_item" ng-repeat="day in offersByDate">
+      <div
+        class="gm_item"
+        ng-repeat="day in offersByDate"
+        ng-if="(day.b >= 0 || day.b == null) || (day.l >= 0 || day.l == null) || (day.d >= 0 || day.d == null)"
+      >
         <div class="row">
           <div class="col gm_col">
             <div class="row">
@@ -242,10 +246,11 @@
             <div class="row">
               <div class="col gm_col">
                 <md-checkbox
+                  ng-if="day.b >= 0 || day.b == null"
                   class="md-warn md-align-top-left"
                   md-indeterminate = "day.b == 0"
                   ng-checked = "day.b == 1"
-                  ng-disabled="day.b == 1"
+                  ng-disabled="day.b < 0"
                   ng-click = "confirm('B', day.b, day.date)"
                   aria-label="B"
                   flex
@@ -254,10 +259,11 @@
               </div>
               <div class="col gm_col">
                 <md-checkbox
+                  ng-if="day.l >= 0 || day.l == null"
                   class="md-warn md-align-top-left"
                   md-indeterminate = "day.l == 0"
                   ng-checked = "day.l == 1"
-                  ng-disabled="day.l == 1"
+                  ng-disabled="day.l < 0"
                   ng-click = "confirm('L', day.l, day.date)"
                   aria-label="L"
                   flex
@@ -266,10 +272,11 @@
               </div>
               <div class="col gm_col">
                 <md-checkbox
+                  ng-if="day.d >= 0 || day.d == null"
                   class="md-warn md-align-top-left"
                   md-indeterminate = "day.d == 0"
                   ng-checked = "day.d == 1"
-                  ng-disabled="day.d == 1"
+                  ng-disabled="day.d < 0"
                   ng-click = "confirm('D', day.d, day.date)"
                   aria-label="D"
                   flex

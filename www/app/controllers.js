@@ -284,8 +284,9 @@ angular.module('restaurant.controllers', [])
           Status.refresh();
         });
       };
-      $scope.confirm = function (meal,status, date) {
-          Give.confirm(meal, status == null ? -1 : status, date).then(function (response) {
+      $scope.confirm = function (meal, status, date) {
+          var status = (status == null ? -1 : status);
+          Give.confirm(meal, status, date).then(function (response) {
             Status.refresh();
           });
       };
