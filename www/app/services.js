@@ -194,8 +194,7 @@ angular.module('restaurant.services', [])
           o_number: null,
           sec_left: null,
           q_today: null,
-          q_tomorrow: null,
-          q_username: null,
+          q_question: null,
           questions: null,
           o_offer: null,
           offers: null
@@ -204,8 +203,7 @@ angular.module('restaurant.services', [])
           o_number: null,
           sec_left: null,
           q_today: null,
-          q_tomorrow: null,
-          q_username: null,
+          q_question: null,
           questions: null,
           o_offer: null,
           offers: null
@@ -214,8 +212,7 @@ angular.module('restaurant.services', [])
           o_number: null,
           sec_left: null,
           q_today: null,
-          q_tomorrow: null,
-          q_username: null,
+          q_question: null,
           questions: null,
           o_offer: null,
           offers: null

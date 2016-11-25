@@ -9,9 +9,7 @@
           <div class="button bar_btn"
                style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
                ng-click="question('B')"
-               ng-disabled="status.meals.b.o_number
-                            || (status.meals.b.q_today && status.meals.b.sec_left > 0)
-                            || (status.meals.b.q_tomorrow && status.meals.b.sec_left <= 0)"
+               ng-disabled="status.meals.b.o_number || status.meals.b.q_question"
                ng-class="{
                             'button-balanced': status.meals.b.sec_left > 0 && !status.meals.b.o_number,
                             'button-stable': status.meals.b.o_number && status.meals.b.o_number != '*****',
@@ -32,8 +30,7 @@
               <sup style="top: -11px;">{{status.meals.b.sec_left | secondsToDateTime}}</sup>
             </div>
             <sup
-              ng-if="!status.meals.b.o_number && (status.meals.b.sec_left > 0 && status.meals.b.q_today
-                        || status.meals.b.sec_left <= 0 && status.meals.b.q_tomorrow)"
+              ng-if="!status.meals.b.o_number && status.meals.b.q_question"
               class="pending_status"
             >
               Pending..
@@ -46,9 +43,7 @@
           <div class="button bar_btn"
                style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
                ng-click="question('L')"
-               ng-disabled="status.meals.l.o_number
-                            || (status.meals.l.q_today && status.meals.l.sec_left > 0)
-                            || (status.meals.l.q_tomorrow && status.meals.l.sec_left <= 0)"
+               ng-disabled="status.meals.l.o_number || status.meals.l.q_question"
                ng-class="{
                             'button-balanced': status.meals.l.sec_left > 0 && !status.meals.l.o_number,
                             'button-stable': status.meals.l.o_number && status.meals.l.o_number != '*****',
@@ -69,8 +64,7 @@
               <sup style="top: -11px;">{{status.meals.l.sec_left | secondsToDateTime}}</sup>
             </div>
             <sup
-              ng-if="!status.meals.l.o_number && (status.meals.l.sec_left > 0 && status.meals.l.q_today
-                        || status.meals.l.sec_left <= 0 && status.meals.l.q_tomorrow)"
+              ng-if="!status.meals.l.o_number && status.meals.l.q_question"
               class="pending_status"
             >
               Pending..
@@ -83,9 +77,7 @@
           <div class="button bar_btn"
                style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
                ng-click="question('D')"
-               ng-disabled="status.meals.d.o_number
-                            || (status.meals.d.q_today && status.meals.d.sec_left > 0)
-                            || (status.meals.d.q_tomorrow && status.meals.d.sec_left <= 0)"
+               ng-disabled="status.meals.d.o_number || status.meals.d.q_question"
                ng-class="{
                             'button-balanced': status.meals.d.sec_left > 0 && !status.meals.d.o_number,
                             'button-stable': status.meals.d.o_number && status.meals.d.o_number != '*****',
@@ -106,8 +98,7 @@
               <sup style="top: -11px;">{{status.meals.d.sec_left | secondsToDateTime}}</sup>
             </div>
             <sup
-              ng-if="!status.meals.d.o_number && (status.meals.d.sec_left > 0 && status.meals.d.q_today
-                        || status.meals.d.sec_left <= 0 && status.meals.d.q_tomorrow)"
+              ng-if="!status.meals.d.o_number && status.meals.d.q_question"
               class="pending_status"
             >
               Pending..
@@ -130,8 +121,7 @@
               <a href="" class="button button-clear button-assertive t_clear_btn"
                  ng-click="reject('B')"><strong>NO</strong></a>
             </div>
-            <div ng-if="!status.meals.b.o_number && (status.meals.b.sec_left > 0 && status.meals.b.q_today
-                        || status.meals.b.sec_left <= 0 && status.meals.b.q_tomorrow)">
+            <div ng-if="!status.meals.b.o_number && status.meals.b.q_question">
               <a href="" class="button button-clear button-calm t_clear_btn"
                  ng-click="cancel('B')">CANCEL
               </a>
@@ -151,8 +141,7 @@
               <a href="" class="button button-clear button-assertive t_clear_btn"
                  ng-click="reject('L')"><strong>NO</strong></a>
             </div>
-            <div ng-if="!status.meals.l.o_number && (status.meals.l.sec_left > 0 && status.meals.l.q_today
-                        || status.meals.l.sec_left <= 0 && status.meals.l.q_tomorrow)">
+            <div ng-if="!status.meals.l.o_number && status.meals.l.q_question">
               <a href="" class="button button-clear button-calm t_clear_btn"
                  ng-click="cancel('L')">CANCEL
               </a>
@@ -172,8 +161,7 @@
               <a href="" class="button button-clear button-assertive t_clear_btn"
                  ng-click="reject('D')"><strong>NO</strong></a>
             </div>
-            <div ng-if="!status.meals.d.o_number && (status.meals.d.sec_left > 0 && status.meals.d.q_today
-                        || status.meals.d.sec_left <= 0 && status.meals.d.q_tomorrow)">
+            <div ng-if="!status.meals.d.o_number && status.meals.d.q_question">
               <a href="" class="button button-clear button-calm t_clear_btn"
                  ng-click="cancel('D')">CANCEL
               </a>
@@ -189,10 +177,10 @@
       <div class="col" style="padding: 0;">
         <div class="card queue_card" ng-repeat="data in status.priority.b">
           <div class="item item-text-wrap item-divider queue_item_divider">
-            {{$index+1}}) {{data.name}} {{data.surname}}
+            {{data.name}} {{data.surname}}
           </div>
           <div class="item item-text-wrap queue_item">
-            <strong>Ask: {{data.day}} at {{data.time}}</strong>
+            <strong>{{data.moment}}</strong>
           </div>
         </div>
       </div>
@@ -204,7 +192,7 @@
             {{data.name}} {{data.surname}}
           </div>
           <div class="item item-text-wrap queue_item">
-            <strong>Ask: {{data.day}} at {{data.time}}</strong>
+            <strong>{{data.moment}}</strong>
           </div>
         </div>
       </div>
@@ -216,7 +204,7 @@
             {{data.name}} {{data.surname}}
           </div>
           <div class="item item-text-wrap queue_item">
-            <strong>Ask: {{data.day}} at {{data.time}}</strong>
+            <strong>{{data.moment}}</strong>
           </div>
         </div>
       </div>
