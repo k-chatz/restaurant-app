@@ -85,15 +85,29 @@ ion-view.pane {
   color: #ffffff;
 }
 
-
-
-
-
 /*Tabs*/
 .tab_content {
   text-align: center;
   /* background: url(../img/df49996a.png); */
   background-color: #343436;
+}
+
+.menu-col-75 {
+  margin: 3px;
+  padding: 1px;
+}
+
+.menu-card {
+  background: #1d1f20;
+}
+
+.menu-content {
+  background: #1d1f20;
+  color: whitesmoke;
+}
+
+menu-header{
+
 }
 
 #take_logo {
@@ -345,4 +359,8 @@ md-radio-button {
 
 md-checkbox {
   margin-bottom: 3px;
+}
+
+md-checkbox.md-default-theme:not([disabled]).md-warn .md-ink-ripple, md-checkbox:not([disabled]).md-warn .md-ink-ripple {
+  color: rgb(255, 201, 0);
 }

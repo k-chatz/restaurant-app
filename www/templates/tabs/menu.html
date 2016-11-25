@@ -3,21 +3,62 @@
   <ion-nav-buttons side="right">
     <button class="button icon-left ion-log-out button-stable " ng-click="logout()">Logout</button>
   </ion-nav-buttons>
+  <ion-content padding="true" scroll="false" class="has-header tab_content" style="text-align: center;">
 
-  <ion-content padding="false" scroll="false" class="has-header tab_content" style="text-align: center;">
-    <h2 id="mENU-heading4" style="color:#ffffff;">BREAKFAST</h2>
-    <div id="mENU-markdown2">
-      <p style="color:#ffffff;">ΓΑΛΑ-ΤΣΑΙ-ΚΑΦΕΣ ΒΟΥΤΗΡΑΚΙΑ ΜΕΡΕΝΤΑ CORN FLAKES ΑΡΤΟΣ
-      </p>
-    </div>
-    <h2 id="mENU-heading5" style="color:#ffffff;">LUNCH</h2>
-    <div id="mENU-markdown3">
-      <p style="color:#ffffff;">ΣΠΑΓΓΕΤΙ ΜΠΟΛΟΝΕΖ (ΣΑΛΤΣΑ ΚΙΜΑ) ΤΥΡΙ ΤΡΙΜΜΕΝΟ ΣΑΛΑΤΑ: ΜΑΡΟΥΛΙ ΛΑΧΑΝΟ ΑΣΠ.ΚΟΚΚ ΚΑΡΟΤΟ ΦΡΟΥΤΟ
-      </p>
-    </div>
-    <h2 id="mENU-heading6" style="color:#ffffff;">DINNER</h2>
-    <div id="mENU-markdown4">
-      <p style="color:#ffffff;">ΑΡΑΚΑΣ ΛΑΔΕΡΟΣ ΜΕ ΠΑΤΑΤΕΣ ΚΑΙ ΚΑΡΟΤΑ ΤΥΡΙ ΦΕΤΑ ΣΑΛΑΤΑ: ΝΤΟΜΑΤΑ-ΑΓΓΟΥΡΙ ΦΡΟΥΤΟ</p>
+
+    <div class="row card menu-card">
+      <div class="col col-75 menu-col-75">
+        <div class="row row-top item item-divider menu-header">
+        Breakfast&nbsp;
+          <span ng-if="status.meals.b.sec_left > 0">for today</span>
+          <span ng-if="status.meals.b.sec_left <= 0"> for tomorrow</span>
+        </div>
+        <div class="row row-bottom item item-text-wrap menu-content">
+          GALA TSAI KAFES BOUTIRAKIA BLABLABLA
+        </div>
+      </div>
+
+      <div class="col col-25">
+
+        <div class="row">
+          <!--Breakfast btn-->
+          <div class="button"
+               style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
+               ng-click="question('B')"
+               ng-disabled="status.meals.b.o_number || status.meals.b.q_question"
+               ng-class="{
+                            'button-balanced': status.meals.b.sec_left > 0 && !status.meals.b.o_number,
+                            'button-stable': status.meals.b.o_number && status.meals.b.o_number != '*****',
+                            'button-assertive': status.meals.b.o_number == '*****',
+                            'button-energized': status.meals.b.sec_left <= 0 && !status.meals.b.o_number}"
+          >
+            <strong>Take</strong>
+            <div class="item-text-wrap" ng-if="status.meals.b.o_number">
+              <p style="margin: 0;"><strong style="color: black">{{status.meals.b.o_number}}</strong></p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!--Breakfast btn-->
+          <div class="button"
+               style="border-radius: 0; border: 1px solid rgb(0, 0, 0); color: black;"
+               ng-click="offer('B')"
+               ng-disabled="status.meals.b.o_number || status.meals.b.o_offer"
+               ng-class="{
+                            'button-balanced': status.meals.b.sec_left > 0 && !status.meals.b.q_username,
+                            'button-stable': status.meals.b.q_username && status.meals.b.q_username != '*****',
+                            'button-assertive': status.meals.b.q_username == '*****',
+                            'button-energized': status.meals.b.sec_left <= 0 && !status.meals.b.q_username}"
+          >
+            <strong>Give</strong>
+            <div class="item-text-wrap" ng-if="status.meals.b.q_username">
+              <p style="margin: 0;"><strong style="color: black">{{status.meals.b.q_username}}</strong></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
 <!--

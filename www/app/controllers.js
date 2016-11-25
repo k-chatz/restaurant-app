@@ -68,8 +68,63 @@ angular.module('restaurant.controllers', [])
     };
   })
 
-  .controller('menuTabCtrl', function ($scope, $state, $http, $ionicPopup, AuthService) {
+  .controller('menuTabCtrl', function ($scope, $state, $http, $ionicPopup, AuthService, Status) {
     console.info("Controller execute: menuTabCtrl");
+
+    $scope.status = {
+      time: null,
+      meals: {
+        b: {
+          o_number: null,
+          sec_left: null,
+          q_question: null,
+          q_username: null,
+          o_today: null,
+          o_tomorrow: null,
+          offers: null
+        },
+        l: {
+          o_number: null,
+          sec_left: null,
+          q_question: null,
+          q_username: null,
+          o_today: null,
+          o_tomorrow: null,
+          offers: null
+        },
+        d: {
+          o_number: null,
+          sec_left: null,
+          q_question: null,
+          q_username: null,
+          o_today: null,
+          o_tomorrow: null,
+          offers: null
+        }
+      },
+      priority: {
+        b: [],
+        l: [],
+        d: []
+      }
+    };
+
+    $scope.$on('$ionicView.enter', function (e) {
+      watcher = $scope.$watch(function () {
+        return Status.data;
+      }, function (data) {
+        if (data.time != null && data.success != false) {
+          $scope.status = data;
+          progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
+        }
+      }, true);
+    });
+
+    $scope.$on('$ionicView.leave', function (e) {
+      console.info('$ionicView.leave');
+      watcher();
+    });
+
     $scope.logout = function () {
       AuthService.logout();
       $state.go('login');
