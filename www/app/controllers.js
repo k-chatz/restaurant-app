@@ -112,8 +112,7 @@ angular.module('restaurant.controllers', [])
           b: {
             o_number: null,
             sec_left: null,
-            q_today: null,
-            q_tomorrow: null,
+            q_question: null,
             q_username: null,
             o_today: null,
             o_tomorrow: null,
@@ -122,8 +121,7 @@ angular.module('restaurant.controllers', [])
           l: {
             o_number: null,
             sec_left: null,
-            q_today: null,
-            q_tomorrow: null,
+            q_question: null,
             q_username: null,
             o_today: null,
             o_tomorrow: null,
@@ -132,8 +130,7 @@ angular.module('restaurant.controllers', [])
           d: {
             o_number: null,
             sec_left: null,
-            q_today: null,
-            q_tomorrow: null,
+            q_question: null,
             q_username: null,
             o_today: null,
             o_tomorrow: null,
@@ -208,8 +205,7 @@ angular.module('restaurant.controllers', [])
           b: {
             o_number: null,
             sec_left: null,
-            q_today: null,
-            q_tomorrow: null,
+            q_question: null,
             q_username: null,
             questions: null,
             o_offer: null,
@@ -218,8 +214,7 @@ angular.module('restaurant.controllers', [])
           l: {
             o_number: null,
             sec_left: null,
-            q_today: null,
-            q_tomorrow: null,
+            q_question: null,
             q_username: null,
             questions: null,
             o_offer: null,
@@ -228,8 +223,7 @@ angular.module('restaurant.controllers', [])
           d: {
             o_number: null,
             sec_left: null,
-            q_today: null,
-            q_tomorrow: null,
+            q_question: null,
             q_username: null,
             questions: null,
             o_offer: null,
