@@ -1,5 +1,6 @@
 angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.config', 'restaurant.controllers', 'restaurant.filters', 'restaurant.directives', 'restaurant.services', 'ionic-multi-date-picker'])
 // 'ngMockE2E'
+
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -15,6 +16,8 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
     });
   })
 
+
+  /*
   .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
     $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
       if ('data' in next && 'authorizedRoles' in next.data) {
@@ -35,6 +38,9 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
       }
     });
   })
+*/
+
+
 
   /*
   timer:
@@ -47,16 +53,17 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
 
   .config(function ($stateProvider, $urlRouterProvider, USER_ROLES) {
     $stateProvider
+
       .state('login', {
         url: '/login',
         templateUrl: 'templates/forms/login.html',
         controller: 'loginCtrl'
       })
 
-      .state('register', {
-        url: '/register',
-        templateUrl: 'templates/forms/register.html',
-        controller: 'registerCtrl'
+      .state('help', {
+        url: '/help',
+        templateUrl: 'templates/help.html',
+        controller: 'helpCtrl'
       })
 
       .state('about', {
@@ -65,6 +72,7 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
         controller: 'aboutCtrl'
       })
 
+      /*Tab states*/
       .state('tab', {
         url: '/',
         abstract: true,
@@ -109,55 +117,11 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
           authorizedRoles: [USER_ROLES.admin, USER_ROLES.boarder]
         }
       });
+
+
     $urlRouterProvider.otherwise('/login');
   })
 
   .config(function ($httpProvider) {
     $httpProvider.defaults.useXDomain = true;
   });
-
-/*
- .run(function ($httpBackend) {
- $httpBackend.whenGET('http://localhost:8100/valid')
- .respond({message: 'This is my valid response!'});
-
-
- $httpBackend.whenGET('api/v1/take/info')
- .respond(
- {
- last_sync_time: null,
- meals: {
- b: {
- b_offer_room: null,
- b_sec_left: 65,
- b_q_today: null,
- b_q_tomorrow: null
- },
- l: {
- l_offer_room: null,
- l_sec_left: null,
- l_q_today: null,
- l_q_tomorrow: null
- },
- d: {
- d_offer_room: null,
- d_sec_left: null,
- d_q_today: null,
- d_q_tomorrow: null
- }
- },
- priority: {
- b: [],
- l: [],
- d: []
- }
- });
-
- $httpBackend.whenGET('http://localhost:8100/notauthenticated')
- .respond(401, {message: "Not Authenticated"});
-
- $httpBackend.whenGET('http://localhost:8100/notauthorized')
- .respond(403, {message: "Not Authorized"});
- */
-//$httpBackend.whenGET(/templates\/\w+.*/).passThrough();
-//})

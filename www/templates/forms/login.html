@@ -1,13 +1,35 @@
 <ion-view view-title="Sign-In" name="login-view">
-    <ion-content class="padding">
-        <div class="list list-inset">
-            <label class="item item-input">
-                <input type="text" placeholder="Username" ng-model="data.username">
-            </label>
-            <label class="item item-input">
-                <input type="password" placeholder="Password" ng-model="data.password">
-            </label>
+    <ion-content class="padding" scroll="false">
+
+      <div class="top-content row">
+        <div class="app-copy col col-top">
+          <h1 style="color: white;" class="app-logo">Restaurant</h1>
+          <p class="app-tagline">
+            Finding food portion number (Breakfast-Lunch-Dinner) from people who provide their portion!
+          </p>
+          <p>
+            Are you ready ?
+          </p>
+
         </div>
-        <button class="button button-block button-positive" ng-click="login(data)">Login</button>
+      </div>
+      <div class="bottom-content row">
+        <div class="col col-bottom">
+          <a class="facebook-sign-in button button-block" ng-click="facebookSignIn()">
+            Connect with Facebook
+          </a>
+        </div>
+      </div>
+
+      <p>
+        After your successful 'Connect' we will check if it's your first time you connect with us and if is then
+        your sign-up it will be done automatically!
+      </p>
+
+      <p>
+        We need only your public profile information (Name, Profile picture, Age range) to storing that data in
+        decide later to leave this application!
+      </p>
+
     </ion-content>
 </ion-view>

@@ -109,6 +109,24 @@ angular.module('restaurant.services', [])
 
   /*****My old services*****/
 
+
+  .service('UserService', function() {
+    // For the purpose of this example I will store user data on ionic local storage but you should save it on a database
+    var setUser = function (user_data) {
+      window.localStorage.starter_facebook_user = JSON.stringify(user_data);
+    };
+
+    var getUser = function () {
+      return JSON.parse(window.localStorage.starter_facebook_user || '{}');
+    };
+
+    return {
+      getUser: getUser,
+      setUser: setUser
+    }
+  })
+
+  /*
   .factory('UserService', ['$http', function ($http) {
     var service = {};
 
@@ -157,6 +175,9 @@ angular.module('restaurant.services', [])
     }
   }])
 
+*/
+
+
   .factory('Clock', function ($interval) {
     var clock = null;
     var service = {
@@ -181,8 +202,8 @@ angular.module('restaurant.services', [])
     var service = {};
 
     //var host = 'http://192.168.1.2/restaurant-api'
-    //var host = 'http://83.212.118.209/restaurant-api'
-    var host = '../../Restaurant-API';
+    var host = 'http://83.212.118.209/Restaurant-API';
+    //var host = '../../Restaurant-API';
 
     service.start = start;
     service.stop = stop;
@@ -272,8 +293,8 @@ angular.module('restaurant.services', [])
     var service = {};
 
     //var host = 'http://192.168.1.2/restaurant-api'
-    //var host = 'http://83.212.118.209/restaurant-api'
-    var host = '../../Restaurant-API';
+    var host = 'http://83.212.118.209/Restaurant-API';
+    //var host = '../../Restaurant-API';
 
     service.question = question;
     service.cancel = cancel;
@@ -341,8 +362,8 @@ angular.module('restaurant.services', [])
     var service = {};
 
     //var host = 'http://192.168.1.2/restaurant-api'
-    //var host = 'http://83.212.118.209/api'
-    var host = '../../Restaurant-API';
+    var host = 'http://83.212.118.209/Restaurant-API';
+    //var host = '../../Restaurant-API';
 
     service.offer = offer;
     service.offers = offers;

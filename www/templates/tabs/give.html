@@ -128,7 +128,7 @@
               Taker: {{status.meals.b.q_username}}
             </div>
             <div ng-if="!status.meals.b.q_username && status.meals.b.o_offer">
-              <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('B')">CANCEL</a>
+              <a href="" class="button button-outline button-calm t_clear_btn" ng-click="cancel('B')">CANCEL</a>
             </div>
           </div>
 
@@ -147,7 +147,7 @@
               Taker: {{status.meals.l.q_username}}
             </div>
             <div ng-if="!status.meals.l.q_username && status.meals.l.o_offer">
-              <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('L')">CANCEL</a>
+              <a href="" class="button button-outline button-calm t_clear_btn" ng-click="cancel('L')">CANCEL</a>
             </div>
           </div>
 
@@ -166,7 +166,7 @@
               Taker: {{status.meals.d.q_username}}
             </div>
             <div ng-if="!status.meals.d.q_username && status.meals.d.o_offer">
-              <a href="" class="button button-clear button-calm t_clear_btn" ng-click="cancel('D')">CANCEL</a>
+              <a href="" class="button button-outline button-calm t_clear_btn" ng-click="cancel('D')">CANCEL</a>
             </div>
           </div>
 
@@ -223,7 +223,7 @@
           <div class="col gm_col">
             <div class="row">
               <div class="col gm_col">
-                {{day.date}}
+                {{ (day.date == '2016-11-25' ? 'Today' : (day.date == '2016-11-26' ? 'Tomorrow' : day.date) )}}
               </div>
             </div>
           </div>
