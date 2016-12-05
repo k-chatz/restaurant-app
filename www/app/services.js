@@ -1,5 +1,67 @@
 angular.module('restaurant.services', [])
 
+  .service('Facebook', ['$q', function ($q) {
+    var service = {};
+    service.authResponse = null;
+    service.status = status;
+    service.login = login;
+    service.profile = profile;
+    service.logout = logout;
+    return service;
+
+    function status() {
+      var info = $q.defer();
+      facebookConnectPlugin.getLoginStatus(function (s) {
+        service.authResponse = s.authResponse;
+        info.resolve(s);
+      }, function (f) {
+        info.reject(f);
+      });
+      return info.promise;
+    }
+
+    function login() {
+      var info = $q.defer();
+      facebookConnectPlugin.login(['email', 'public_profile'], function (s) {
+        service.authResponse = s.authResponse;
+        info.resolve(s);
+      }, function (f) {
+        info.reject(f);
+      });
+      return info.promise;
+    }
+
+    function logout() {
+      var info = $q.defer();
+      facebookConnectPlugin.logout(function (s) {
+          service.authResponse = null;
+          info.resolve(s);
+        },
+        function (f) {
+          info.resolve(f);
+        });
+      return info.promise;
+    }
+
+    function profile() {
+      var info = $q.defer();
+      facebookConnectPlugin.api('/me?fields=email,name&access_token=' + service.authResponse.accessToken, null,
+        function (s) {
+          info.resolve({
+            authorization: service.authResponse,
+            name: s.name,
+            email: s.email,
+            picture: "http://graph.facebook.com/" + s.id + "/picture?type=large"
+          });
+        },
+        function (f) {
+          info.reject(f);
+        }
+      );
+      return info.promise;
+    }
+  }])
+
   .service('AuthService', function ($q, $http, USER_ROLES) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
     var username = '';
