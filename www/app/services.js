@@ -262,11 +262,6 @@ angular.module('restaurant.services', [])
   .service('Status', ['$rootScope', '$http', '$interval', function ($rootScope, $http, $interval) {
     var clock = null;
     var service = {};
-
-    //var host = 'http://192.168.1.2/restaurant-api'
-    var host = 'http://83.212.118.209/Restaurant-API';
-    //var host = '../../Restaurant-API';
-
     service.start = start;
     service.stop = stop;
     service.refresh = refresh;
@@ -311,7 +306,7 @@ angular.module('restaurant.services', [])
 
     function refresh() {
       info().then(function (result) {
-        if(result.success!= false)
+        if (result.success != false)
           service.data = result;
       });
     }
@@ -331,12 +326,11 @@ angular.module('restaurant.services', [])
 
     function info() {
       return $http({
-        url: host + '/v1/status/info',
+        url: envService.read('apiUrl') + envService.read('statusInfoPath'),
         method: 'GET',
-        data: {},
-        //headers: {'Content-Type': 'text/plain'},
         cache: false,
-        crossDomain: true
+        crossDomain: true,
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -351,13 +345,8 @@ angular.module('restaurant.services', [])
     }
   }])
 
-  .service('Take', ['$http', function ($http) {
+  .service('Take', ['envService', '$http', function (envService, $http) {
     var service = {};
-
-    //var host = 'http://192.168.1.2/restaurant-api'
-    var host = 'http://83.212.118.209/Restaurant-API';
-    //var host = '../../Restaurant-API';
-
     service.question = question;
     service.cancel = cancel;
     service.confirm = confirm;
@@ -370,9 +359,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/take/question',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('takeQuestionPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -381,9 +370,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/take/cancel',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('takeCancelPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -392,9 +381,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/take/confirm',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('takeConfirmPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -403,9 +392,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/take/reject',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('takeRejectPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -420,13 +409,8 @@ angular.module('restaurant.services', [])
     }
   }])
 
-  .service('Give', ['$http', function ($http) {
+  .service('Give', ['envService', '$http', function (envService, $http) {
     var service = {};
-
-    //var host = 'http://192.168.1.2/restaurant-api'
-    var host = 'http://83.212.118.209/Restaurant-API';
-    //var host = '../../Restaurant-API';
-
     service.offer = offer;
     service.offers = offers;
     service.cancel = cancel;
@@ -439,9 +423,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/give/offer',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('giveOfferPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -450,9 +434,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/give/offers',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('giveOffersPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -461,9 +445,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/give/cancel',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('giveCancelPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -472,9 +456,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/give/confirm',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal, status: parseInt(status), date: date}
+        url: envService.read('apiUrl') + envService.read('giveConfirmPath'),
+        data: {meal: meal, status: parseInt(status), date: date},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 
@@ -483,9 +467,9 @@ angular.module('restaurant.services', [])
         method: 'POST',
         cache: false,
         crossDomain: true,
-        url: host + '/v1/give/reject',
-        headers: {'Content-Type': 'application/json'},
-        data: {meal: meal}
+        url: envService.read('apiUrl') + envService.read('giveRejectPath'),
+        data: {meal: meal},
+        timeout: envService.read('timeout')
       }).then(handleSuccess, handleError('Error'));
     }
 

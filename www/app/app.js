@@ -1,4 +1,16 @@
-angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.config', 'restaurant.controllers', 'restaurant.filters', 'restaurant.directives', 'restaurant.services', 'ionic-multi-date-picker'])
+angular.module('restaurant', [
+  'ionic',
+  'ngCordova',
+  'ngMaterial',
+  'ui.router',
+  'restaurant.config',
+  'restaurant.controllers',
+  'restaurant.filters',
+  'restaurant.directives',
+  'restaurant.services',
+  'ionic-multi-date-picker',
+  'environment'])
+
 // 'ngMockE2E'
 
   .run(function ($ionicPlatform) {
@@ -15,7 +27,6 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
       }
     });
   })
-
 
   /*
   .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
@@ -39,17 +50,6 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
     });
   })
 */
-
-
-
-  /*
-  timer:
-   .run(function(ClockSrv){
-   ClockSrv.startClock(function(){
-   console.log("clocksrv");
-   });
-   })
-   */
 
   .config(function ($stateProvider, $urlRouterProvider, USER_ROLES) {
     $stateProvider
@@ -118,10 +118,49 @@ angular.module('restaurant', ['ionic', 'ngMaterial', 'ui.router', 'restaurant.co
         }
       });
 
-
     $urlRouterProvider.otherwise('/login');
   })
 
-  .config(function ($httpProvider) {
+  .config(function ($httpProvider, envServiceProvider) {
     $httpProvider.defaults.useXDomain = true;
+
+    envServiceProvider.config({
+      domains: {
+        development: ['localhost'],
+        production: ['83.212.118.209']
+      },
+      vars: {
+        development: {
+          apiUrl: 'http://192.168.1.3/ionic/Restaurant-API',
+          userDoConnectPath: '/user/do/connect',
+          statusInfoPath: '/status/info',
+          takeQuestionPath: '/take/question',
+          takeCancelPath: '/take/cancel',
+          takeConfirmPath: '/take/confirm',
+          takeRejectPath: '/take/reject',
+          giveOfferPath: '/give/offer',
+          giveOffersPath: '/give/offers',
+          giveCancelPath: '/give/cancel',
+          giveConfirmPath: '/give/confirm',
+          giveRejectPath: '/give/reject',
+          timeout: 5000
+        },
+        production: {
+          apiUrl: 'http://83.212.118.209/Restaurant-API',
+          userDoConnectPath: '/user/do/connect',
+          statusInfoPath: '/status/info',
+          takeQuestionPath: '/take/question',
+          takeCancelPath: '/take/cancel',
+          takeConfirmPath: '/take/confirm',
+          takeRejectPath: '/take/reject',
+          giveOfferPath: '/give/offer',
+          giveOffersPath: '/give/offers',
+          giveCancelPath: '/give/cancel',
+          giveConfirmPath: '/give/confirm',
+          giveRejectPath: '/give/reject',
+          timeout: 10000
+        }
+      }
+    });
+    envServiceProvider.check();
   });
