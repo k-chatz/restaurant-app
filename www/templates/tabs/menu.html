@@ -1,14 +1,10 @@
 <ion-view title="Restaurant menu">
-  <ion-content padding="true" scroll="false" class="has-header tab_content" style="text-align: center;">
-    <div class="row">
-      <div class="col">
-        <h3 style="color:white;" class="welcome-message">Hi {{user.name}}</h3>
-        <p>You have logged in with Facebook</p>
-        <img ng-src="{{user.picture}}">
-        <p>To logout open the menu with the hamburger button and click Logout!</p>
-      </div>
-    </div>
 
+  <ion-nav-buttons side="right">
+    <a class="button button-clear button-dark icon-left ion-gear-a " href="#/settings"></a>
+  </ion-nav-buttons>
+
+  <ion-content padding="true" scroll="false" class="has-header tab_content" style="text-align: center;">
 
     <div class="row card menu-card">
       <div class="col col-75 menu-col-75">

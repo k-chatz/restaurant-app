@@ -61,6 +61,9 @@ ion-view.pane {
   color: #fff;
 }
 
+.buttons.buttons-right {
+  top: 2.5px !important;
+}
 
 .menu {
   background-color: #1d1f20;
