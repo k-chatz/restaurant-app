@@ -121,6 +121,7 @@ angular.module('restaurant.services', [])
       if (clock === null) {
         clock = $interval(refresh, msec);
       }
+      refresh();
     }
 
     function stop() {

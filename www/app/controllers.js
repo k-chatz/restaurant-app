@@ -43,7 +43,6 @@ angular.module('restaurant.controllers', [])
       })
     };
 
-
   })
 
 
@@ -256,6 +255,7 @@ angular.module('restaurant.controllers', [])
         $scope.status.meals.l.progress = l < 0 ? 0 : l;
         $scope.status.meals.d.progress = d < 0 ? 0 : d;
       }
+
       $scope.$on('$ionicView.enter', function (e) {
         watcher = $scope.$watch(function () {
           return Status.data;
@@ -285,10 +285,10 @@ angular.module('restaurant.controllers', [])
         });
       };
       $scope.confirm = function (meal, status, date) {
-          var status = (status == null ? -1 : status);
-          Give.confirm(meal, status, date).then(function (response) {
-            Status.refresh();
-          });
+        var status = (status == null ? -1 : status);
+        Give.confirm(meal, status, date).then(function (response) {
+          Status.refresh();
+        });
       };
       $scope.reject = function (meal) {
         Give.reject(meal).then(function (response) {
@@ -348,7 +348,7 @@ angular.module('restaurant.controllers', [])
         callback: setMoreOffer
       };
 
-      function setMoreOffer(dates){
+      function setMoreOffer(dates) {
         $scope.offersByDate.length = 0;
         for (var i = 0; i < dates.length; i++) {
           $scope.offersByDate.push(angular.copy(dates[i]));
@@ -356,33 +356,6 @@ angular.module('restaurant.controllers', [])
       }
 
     }])
-
-  /*Other*/
-
-  .controller('helpCtrl', ['$scope', '$stateParams',
-    function ($scope, $stateParams) {
-      console.info("Controller execute: helpCtrl");
-
-    }])
-
-  .controller('aboutCtrl', ['$scope', '$stateParams',
-  function ($scope, $stateParams) {
-    console.info("Controller execute: aboutCtrl");
-
-  }]);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   /*Navigator*/
