@@ -553,12 +553,36 @@ angular.module('restaurant.controllers', [])
 
 
 
+  /*Other*/
+
+  .controller('helpCtrl', function ($scope, $stateParams, Status, User) {
+      console.info("Controller execute: helpCtrl");
+
+      $scope.debugLogin = function (token) {
+        console.info("Login!");
+        User.debugLogin(token);
+      };
+
+      $scope.debugLogout = function (token) {
+        console.info("Logout!");
+        User.debugLogout();
+      };
+
+      $scope.start = function () {
+        console.info("Start Timer");
+        Status.start(5000);
+      };
+
+      $scope.stop = function () {
+        console.info("Stop Timer");
+        Status.stop();
+      };
 
 
+    })
 
+  .controller('aboutCtrl', ['$scope', '$stateParams',
+    function ($scope, $stateParams) {
+      console.info("Controller execute: aboutCtrl");
 
-
-
-
-
-
+    }]);

@@ -1,5 +1,18 @@
 <ion-view view-title="About" name="about-view">
   <ion-content class="padding">
-    this is help state
+    <div style="background: black; border: 2px solid yellow">
+      <h3 style="color: yellow;">::Debuging Options::</h3>
+
+      <p style="color: yellow;">Enter Authorization header:
+        <input style="background: rgb(52, 52, 54); color: white; width: 100%;" type="text" ng-model="token">
+        <button style="border: 0px; background: yellow; width: 100%;" ng-click="debugLogin(token)">Debug Login</button>
+        <button style="border: 0px; background: yellow; width: 100%;" ng-click="debugLogout()">Debug Logout</button>
+      </p>
+
+      <p style="color: yellow;">Status timer:
+        <button style="border: 0px; background: green;" ng-click="start()">Start</button>
+        <button style="border: 0px; background: red;" ng-click="stop()">Stop</button>
+      </p>
+    </div>
   </ion-content>
 </ion-view>
