@@ -171,13 +171,19 @@
       </div>
     </div>
 
+
     <!--Priority-->
     <div class="row">
       <!--Breakfast queue-->
       <div class="col" style="padding: 0;">
         <div class="card queue_card" ng-repeat="data in status.priority.b">
           <div class="item item-text-wrap item-divider queue_item_divider">
-            {{data.name}} {{data.surname}}
+            <div class="row">
+              <div class="col">
+                <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
+              </div>
+                {{data.name}}
+            </div>
           </div>
           <div class="item item-text-wrap queue_item">
             <strong>{{data.moment}}</strong>
@@ -189,7 +195,12 @@
       <div class="col" style="padding: 0;">
         <div class="card queue_card" ng-repeat="data in status.priority.l">
           <div class="item item-text-wrap item-divider queue_item_divider">
-            {{data.name}} {{data.surname}}
+            <div class="row">
+              <div class="col">
+                <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
+              </div>
+              {{data.name}}
+            </div>
           </div>
           <div class="item item-text-wrap queue_item">
             <strong>{{data.moment}}</strong>
@@ -201,7 +212,12 @@
       <div class="col" style="padding: 0;">
         <div class="card queue_card" ng-repeat="data in status.priority.d">
           <div class="item item-text-wrap item-divider queue_item_divider">
-            {{data.name}} {{data.surname}}
+            <div class="row">
+              <div class="col">
+                <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
+              </div>
+              {{data.name}}
+            </div>
           </div>
           <div class="item item-text-wrap queue_item">
             <strong>{{data.moment}}</strong>

@@ -49,11 +49,11 @@ ion-nav-view.view-container {
 }
 
 ion-view.pane {
-  background: rgb(0, 0, 0);
+  background: #444;
 }
 
 .bar.bar-stable {
-  /* border-color: #434343; */
+  border-color: #434343;
   background-color: rgb(29, 31, 32);
 }
 
@@ -63,13 +63,14 @@ ion-view.pane {
 
 
 .menu {
-  background-color: #173d3e;
+  background-color: #1d1f20;
 }
 
 .menu_bar_item {
-  border-color: #1e1e1e;
-  background-color: rgb(43, 81, 82);
-  color: #ffffff;
+
+  border-color: #444444;
+  background-color: rgb(29, 31, 32);
+  color: #ffffff !important;
 }
 
 
