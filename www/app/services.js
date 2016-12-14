@@ -1,6 +1,9 @@
 angular.module('restaurant.services', [])
 
   .service('Facebook', ['$q', function ($q) {
+
+    /*TODO: Work for android, browser, windows, ios*/
+
     var service = {};
     service.authResponse = null;
     service.status = status;
@@ -22,7 +25,7 @@ angular.module('restaurant.services', [])
 
     function login() {
       var info = $q.defer();
-      facebookConnectPlugin.login(['email', 'public_profile'], function (s) {
+      facebookConnectPlugin.login(['public_profile'], function (s) {
         service.authResponse = s.authResponse;
         info.resolve(s);
       }, function (f) {
@@ -62,204 +65,7 @@ angular.module('restaurant.services', [])
     }
   }])
 
-  .service('AuthService', function ($q, $http, USER_ROLES) {
-    var LOCAL_TOKEN_KEY = 'yourTokenKey';
-    var username = '';
-    var isAuthenticated = false;
-    var role = '';
-    var authToken;
-
-    function loadUserCredentials() {
-      var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-      if (token) {
-        useCredentials(token);
-      }
-    }
-
-    function storeUserCredentials(token) {
-      window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-      useCredentials(token);
-    }
-
-    function useCredentials(token) {
-      username = token.split('.')[0];
-      isAuthenticated = true;
-      authToken = token;
-
-      role = USER_ROLES.visitor;
-
-      if (username == 'admin') {
-        role = USER_ROLES.admin;
-      }
-      else {
-        role = USER_ROLES.boarder;
-      }
-
-      // Set the token as header for your requests!
-      $http.defaults.headers.common['X-Auth-Token'] = token;
-    }
-
-    function destroyUserCredentials() {
-      authToken = undefined;
-      username = '';
-      isAuthenticated = false;
-      $http.defaults.headers.common['X-Auth-Token'] = undefined;
-      window.localStorage.removeItem(LOCAL_TOKEN_KEY);
-    }
-
-    var login = function (name, pw) {
-
-
-      return $q(function (resolve, reject) {
-
-
-        if ((name == 'admin' && pw == '1') || (name == 'user' && pw == '1')) {
-          // Make a request and receive your auth token from your server
-          storeUserCredentials(name + '.yourServerToken');
-          resolve('Login success.');
-        } else {
-          reject('Login Failed.');
-        }
-      });
-
-
-    };
-
-    var logout = function () {
-      console.info("AuthService function: logout");
-      destroyUserCredentials();
-    };
-
-    var isAuthorized = function (authorizedRoles) {
-      //console.log(authorizedRoles);
-      if (!angular.isArray(authorizedRoles)) {
-        authorizedRoles = [authorizedRoles];
-      }
-      return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
-    };
-
-
-    loadUserCredentials();
-
-    return {
-      login: login,
-      logout: logout,
-      isAuthorized: isAuthorized,
-      isAuthenticated: function () {
-        return isAuthenticated;
-      },
-      username: function () {
-        return username;
-      },
-      role: function () {
-        return role;
-      }
-    };
-  })
-
-  .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
-    return {
-      responseError: function (response) {
-        $rootScope.$broadcast({
-          401: AUTH_EVENTS.notAuthenticated,
-          403: AUTH_EVENTS.notAuthorized
-        }[response.status], response);
-        return $q.reject(response);
-      }
-    };
-  })
-
-  /*****My old services*****/
-
-
-  .service('UserService', function() {
-    // For the purpose of this example I will store user data on ionic local storage but you should save it on a database
-    var setUser = function (user_data) {
-      window.localStorage.starter_facebook_user = JSON.stringify(user_data);
-    };
-
-    var getUser = function () {
-      return JSON.parse(window.localStorage.starter_facebook_user || '{}');
-    };
-
-    return {
-      getUser: getUser,
-      setUser: setUser
-    }
-  })
-
-  /*
-  .factory('UserService', ['$http', function ($http) {
-    var service = {};
-
-    service.GetAll = GetAll;
-    service.GetById = GetById;
-    service.GetByUsername = GetByUsername;
-    service.Create = Create;
-    service.Update = Update;
-    service.Delete = Delete;
-
-    return service;
-
-    function GetAll() {
-      return $http.get('/api/v1/users').then(handleSuccess, handleError('Error getting all users'));
-    }
-
-    function GetById(id) {
-      return $http.get('/api/v1/users' + id).then(handleSuccess, handleError('Error getting user by id'));
-    }
-
-    function GetByUsername(username) {
-      return $http.get('/api/v1/users' + username).then(handleSuccess, handleError('Error getting user by username'));
-    }
-
-    function Create(user) {
-      return $http.post('/api/v1/users', user).then(handleSuccess, handleError('Error creating user'));
-    }
-
-    function Update(user) {
-      return $http.put('/api/v1/users' + user.id, user).then(handleSuccess, handleError('Error updating user'));
-    }
-
-    function Delete(id) {
-      return $http.delete('/api/v1/users' + id).then(handleSuccess, handleError('Error deleting user'));
-    }
-
-    // private functions
-    function handleSuccess(res) {
-      return res.data;
-    }
-
-    function handleError(error) {
-      return function () {
-        return {success: false, message: error};
-      };
-    }
-  }])
-
-*/
-
-
-  .factory('Clock', function ($interval) {
-    var clock = null;
-    var service = {
-      start: function (fn) {
-        if (clock === null) {
-          clock = $interval(fn, 1000);
-        }
-      },
-      stop: function () {
-        if (clock !== null) {
-          $interval.cancel(clock);
-          clock = null;
-        }
-      }
-    };
-
-    return service;
-  })
-
-  .service('Status', ['$rootScope', '$http', '$interval', function ($rootScope, $http, $interval) {
+  .service('Status', ['envService', '$rootScope', '$http', '$interval', function (envService, $rootScope, $http, $interval) {
     var clock = null;
     var service = {};
     service.start = start;
@@ -483,6 +289,137 @@ angular.module('restaurant.services', [])
       };
     }
   }])
+
+  .service('User', ['envService', '$cordovaSpinnerDialog', '$ionicLoading', '$q', '$http', 'Facebook', 'USER_ROLES', function (envService, $cordovaSpinnerDialog, $ionicLoading, $q, $http, Facebook, USER_ROLES) {
+
+    var LOCAL_TOKEN_KEY = null;
+    var isAuthenticated = false;
+    var role = '';
+    var authToken;
+
+    function loadUserCredentials() {
+      var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+      if (token) {
+        useCredentials(token);
+      }
+    }
+
+    function storeUserCredentials(token) {
+      window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+      useCredentials(token);
+    }
+
+    function useCredentials(token) {
+      isAuthenticated = true;
+      authToken = token;
+
+      /*TODO: Get userRole from token data*/
+      role = USER_ROLES.admin;
+
+      $http.defaults.headers.common['authorization'] = 'Bearer ' + token;
+      $http.defaults.headers.common['Content-Type'] = 'application/json';
+    }
+
+    function destroyUserCredentials() {
+      authToken = undefined;
+      isAuthenticated = false;
+      $http.defaults.headers.common['X-Auth-Token'] = undefined;
+      window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+      delete $http.defaults.headers.common.authorization;
+    }
+
+    var isAuthorized = function(authorizedRoles) {
+      if (!angular.isArray(authorizedRoles)) {
+        authorizedRoles = [authorizedRoles];
+      }
+      return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
+    };
+
+    loadUserCredentials();
+
+    var service = {};
+    service.doLogin = doLogin;
+    service.doLogout = doLogout;
+    service.isAuthorized = isAuthorized;
+    service.isAuthenticated = function () {
+      return isAuthenticated;
+    };
+    service.role = function () {
+      return role;
+    };
+    service.debugLogin = function (token) {
+      storeUserCredentials(token);
+    }
+    service.debugLogout = function () {
+      destroyUserCredentials();
+    }
+    return service;
+
+    function doLogin() {
+      var info = $q.defer();
+      if (!isAuthenticated) {
+        Facebook.login().then(function (s) {
+          $cordovaSpinnerDialog.show("User Checking", "The Facebook login was completed successfully! Now waiting for the application's server response...", true);
+          $http({
+            method: 'POST',
+            cache: false,
+            crossDomain: true,
+            url: envService.read('apiUrl') + envService.read('userDoConnectPath'),
+            headers: {'Content-Type': 'application/json'},
+            data: {fbAccessToken: s.authResponse.accessToken},
+            timeout: envService.read('timeout')
+          }).then(function (success) {
+            storeUserCredentials(success.data.jwt);
+            info.resolve(success.data);
+            $cordovaSpinnerDialog.hide();
+          }, function (fail) {
+            info.reject(fail);
+            $cordovaSpinnerDialog.hide();
+            $ionicLoading.hide();
+            $ionicLoading.show({
+              template: '<h3 style="color:red">It seems something went wrong!</h3>',
+              duration: 3000
+            });
+          })
+        }, function (f) {
+          info.reject(f);
+        });
+      }
+      else {
+        $ionicLoading.show({
+          template: 'Already logged in!',
+          duration: 1000
+        });
+        info.reject({error: {message: "Already logged in!"}});
+      }
+      return info.promise;
+    }
+
+    function doLogout() {
+      var info = $q.defer();
+      Facebook.logout().then(function (s) {
+        destroyUserCredentials();
+        /*TODO: http call to api to destroySessionCredentials and update database 'isLoggedIn' value for current user*/
+        info.resolve(s);
+      }, function (f) {
+        info.reject(f);
+      });
+      return info.promise;
+    }
+  }])
+
+  /*:::::User authorization:::::*/
+  .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+    return {
+      responseError: function (response) {
+        $rootScope.$broadcast({
+          401: AUTH_EVENTS.notAuthenticated,
+          403: AUTH_EVENTS.notAuthorized
+        }[response.status], response);
+        return $q.reject(response);
+      }
+    };
+  })
 
   .config(function ($httpProvider) {
     $httpProvider.interceptors.push('AuthInterceptor');

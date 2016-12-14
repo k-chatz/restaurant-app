@@ -9,9 +9,8 @@ angular.module('restaurant', [
   'restaurant.directives',
   'restaurant.services',
   'ionic-multi-date-picker',
-  'environment'])
-
-// 'ngMockE2E'
+  'environment',
+  'angular-jwt'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
@@ -27,29 +26,6 @@ angular.module('restaurant', [
       }
     });
   })
-
-  /*
-  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
-    $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-      if ('data' in next && 'authorizedRoles' in next.data) {
-        var authorizedRoles = next.data.authorizedRoles;
-        if (!AuthService.isAuthorized(authorizedRoles)) {
-          event.preventDefault();
-          //$state.go('tab/menu');
-          $state.go($state.current, {}, {reload: true});
-          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-        }
-      }
-
-      if (!AuthService.isAuthenticated()) {
-        if (next.name !== 'login') {
-          event.preventDefault();
-          $state.go('login');
-        }
-      }
-    });
-  })
-*/
 
   .config(function ($stateProvider, $urlRouterProvider, USER_ROLES) {
     $stateProvider
@@ -116,9 +92,41 @@ angular.module('restaurant', [
         data: {
           authorizedRoles: [USER_ROLES.admin, USER_ROLES.boarder]
         }
-      });
+      })
+
+      .state('settings', {
+        url: '/settings',
+        templateUrl: 'templates/settings.html',
+        controller: 'aboutCtrl',
+        data: {
+          authorizedRoles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+        }
+      })
 
     $urlRouterProvider.otherwise('/login');
+  })
+
+  .run(function ($rootScope, $state, User, AUTH_EVENTS) {
+    $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
+
+      console.log(next);
+      if ('data' in next && 'authorizedRoles' in next.data) {
+        var authorizedRoles = next.data.authorizedRoles;
+        if (!User.isAuthorized(authorizedRoles)) {
+          event.preventDefault();
+          $state.go($state.current, {}, {reload: true});
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+        }
+      }
+
+      if (!User.isAuthenticated()) {
+        if (["login", "help", "about"].indexOf(next.name) == -1) {
+          event.preventDefault();
+          $state.go('login');
+        }
+      }
+
+    });
   })
 
   .config(function ($httpProvider, envServiceProvider) {
@@ -163,4 +171,7 @@ angular.module('restaurant', [
       }
     });
     envServiceProvider.check();
+
+    envServiceProvider.set('production');
+
   });

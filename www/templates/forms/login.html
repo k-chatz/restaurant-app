@@ -1,36 +1,46 @@
 <ion-view view-title="Sign-In" name="login-view">
-    <ion-content class="padding" scroll="false">
+  <ion-content class="padding" scroll="true">
 
-      <div class="top-content row">
-        <div class="app-copy col col-top">
-          <h1 style="color: white;" class="app-logo">Restaurant</h1>
-          <p class="app-tagline">
-            Finding food portion number (Breakfast-Lunch-Dinner) from people who provide their portion!
-          </p>
-          <p>
-            Are you ready ?
-          </p>
-
-        </div>
-      </div>
-      <div class="bottom-content row">
-        <div class="col col-bottom">
-          <a class="facebook-sign-in button button-block" ng-click="facebookSignIn()">
-            Connect with Facebook
-          </a>
-        </div>
+    <div class="top-content row">
+      <div class="app-copy welcome-logo">
+        <h1 style="color: white;" class="app-logo">Restaurant</h1>
+        <p class="app-tagline">
+          Finding food portion number (Breakfast-Lunch-Dinner) from people who provide their portion!
+        </p>
       </div>
 
-      <p>
-        After your successful 'Connect' we will check if it's your first time you connect with us and if is then
-        your sign-up it will be done automatically!
-      </p>
+    </div>
 
-      <p>
-        We need only your public profile information (Name, Profile picture, Age range) to storing that data in
-        'Restaurant App' database for the operating needs of the application and of course we delete this data if you
-        decide later to leave this application!
-      </p>
+    <p>
+      After your successful 'Connect' we will check if it's your first time you connect with us and if is then
+      your sign-up it will be done automatically!
+    </p>
 
-    </ion-content>
+    <p>
+      We need only your public profile information (Name, Profile picture, Age range) to storing that data in
+      'Restaurant App' database for the operating needs of the application and of course we delete this data if you
+      decide later to leave this application!
+    </p>
+
+    <p>
+      Are you ready ?
+    </p>
+
+
+    <div class="bottom-content row">
+      <div class="col col-bottom">
+        <a style="background-color:#294886; color:white" class="button button-block" ng-click="login()">
+          <i style="font-size: 24px;" class="ion-social-facebook"></i>&nbsp;&nbsp;&nbsp;Log in with Facebook
+        </a>
+      </div>
+    </div>
+
+    <!--
+    <p>S:</p>
+    <pre>{{s | json}}</pre>
+
+    <p>F:</p>
+    <pre>{{f | json}}</pre>
+ -->
+  </ion-content>
 </ion-view>

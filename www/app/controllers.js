@@ -1,181 +1,46 @@
 angular.module('restaurant.controllers', [])
 
-  .controller('mainCtrl', function ($rootScope, $interval, $scope, $state, $ionicPopup, AuthService, AUTH_EVENTS, Status) {
+  .controller('mainCtrl', function ($scope, $state, $ionicPopup, User, AUTH_EVENTS) {
     console.info("Controller execute: mainCtrl'");
-    $scope.username = AuthService.username();
 
-    Status.start(5000);
-
-    $scope.menuTabActive = true;
-    $scope.takeTabActive = true;
-    $scope.giveTabActive = true;
-    /*False if user isn't boarder*/
-
-    $scope.$on(AUTH_EVENTS.notAuthorized, function (event) {
-      var alertPopup = $ionicPopup.alert({
+    $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
+      $ionicPopup.alert({
         title: 'Unauthorized!',
         template: 'You are not allowed to access this resource.'
+      }).then(function () {
+
       });
     });
 
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event) {
-      AuthService.logout();
-      $state.go('login');
-      var alertPopup = $ionicPopup.alert({
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
+      $ionicPopup.alert({
         title: 'Session Lost!',
         template: 'Sorry, You have to login again.'
+      }).then(function () {
+        User.doLogout();
+        $state.go('login');
       });
     });
 
-    $scope.setCurrentUsername = function (name) {
-      $scope.username = name;
-    };
+    /*TODO: Add watchers to disable/enable this tabs*/
+    $scope.menuTabActive = true;
+    $scope.takeTabActive = true;
 
+    /*False if user isn't boarder*/
+    $scope.giveTabActive = true;
   })
 
-
-  .controller('menuCtrl', ['$scope', '$stateParams', 'UserService', '$ionicActionSheet', '$state', '$ionicLoading',
-    function ($scope, $stateParams, UserService, $ionicActionSheet, $state, $ionicLoading) {
-      console.info("Controller execute: menuCtrl");
-
-      $scope.showLogOutMenu = function() {
-        console.info("Logout menu button clicked!");
-        var hideSheet = $ionicActionSheet.show({
-          destructiveText: 'Logout',
-          titleText: '<h4><strong>Are you sure you want to logout?</strong></h4> ' +
-          '<p>If you disconnect, you will not be able to receive notifications for any news!</p>',
-          cancelText: 'Cancel',
-          cancel: function() {},
-          buttonClicked: function(index) {
-            return true;
-          },
-          destructiveButtonClicked: function(){
-            $ionicLoading.show({
-              template: 'Logging out...'
-            });
-
-            //facebook logout
-            facebookConnectPlugin.logout(function(){
-                $ionicLoading.hide();
-                $state.go('/login');
-              },
-              function(fail){
-                $ionicLoading.hide();
-              });
-          }
-        });
-      };
-
-    }])
-
-
-  .controller('loginCtrl', function ($scope, $state, $q, UserService, $ionicLoading) {
+  /*User*/
+  .controller('loginCtrl', function ($scope, $state, User, Status) {
     console.info("Controller execute: loginCtrl");
 
-
-    //This is the success callback from the login method
-    var fbLoginSuccess = function(response) {
-      if (!response.authResponse){
-        fbLoginError("Cannot find the authResponse");
-        return;
-      }
-
-      var authResponse = response.authResponse;
-
-      getFacebookProfileInfo(authResponse)
-        .then(function(profileInfo) {
-          //for the purpose of this example I will store user data on local storage
-          UserService.setUser({
-            authResponse: authResponse,
-            userID: profileInfo.id,
-            name: profileInfo.name,
-            email: profileInfo.email,
-            picture : "http://graph.facebook.com/" + authResponse.userID + "/picture?type=large"
-          });
-
-          $ionicLoading.hide();
-          $state.go('tab.menu');
-
-        }, function(fail){
-          //fail get profile info
-          console.log('profile info fail', fail);
-        });
-    };
-
-
-    //This is the fail callback from the login method
-    var fbLoginError = function(error){
-      console.log('fbLoginError', error);
-      $ionicLoading.hide();
-    };
-
-    //this method is to get the user profile info from the facebook api
-    var getFacebookProfileInfo = function (authResponse) {
-      var info = $q.defer();
-
-      facebookConnectPlugin.api('/me?fields=email,name&access_token=' + authResponse.accessToken, null,
-        function (response) {
-          console.log(response);
-          info.resolve(response);
-        },
-        function (response) {
-          console.log(response);
-          info.reject(response);
-        }
-      );
-      return info.promise;
-    };
-
-    //This method is executed when the user press the "Login with facebook" button
-    $scope.facebookSignIn = function() {
-
-      facebookConnectPlugin.getLoginStatus(function(success){
-        if(success.status === 'connected'){
-          // the user is logged in and has authenticated your app, and response.authResponse supplies
-          // the user's ID, a valid access token, a signed request, and the time the access token
-          // and signed request each expire
-          console.log('getLoginStatus', success.status);
-
-          //check if we have our user saved
-          var user = UserService.getUser('facebook');
-
-          if(!user.userID)
-          {
-            getFacebookProfileInfo(success.authResponse)
-              .then(function(profileInfo) {
-
-                //for the purpose of this example I will store user data on local storage
-                UserService.setUser({
-                  authResponse: success.authResponse,
-                  userID: profileInfo.id,
-                  name: profileInfo.name,
-                  email: profileInfo.email,
-                  picture : "http://graph.facebook.com/" + success.authResponse.userID + "/picture?type=large"
-                });
-
-                $state.go('app.home');
-
-              }, function(fail){
-                //fail get profile info
-                console.log('profile info fail', fail);
-              });
-          }else{
-            $state.go('app.home');
-          }
-
-        } else {
-          //if (success.status === 'not_authorized') the user is logged in to Facebook, but has not authenticated your app
-          //else The person is not logged into Facebook, so we're not sure if they are logged into this app or not.
-          console.log('getLoginStatus', success.status);
-
-          $ionicLoading.show({
-            template: 'Logging in...'
-          });
-
-          //ask the permissions you need. You can learn more about FB permissions here: https://developers.facebook.com/docs/facebook-login/permissions/v2.4
-          facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
-        }
-      });
+    $scope.login = function () {
+      User.doLogin().then(function (data) {
+        Status.start(5000);
+        $state.go('tab.menu');
+      }, function (f) {
+        $scope.status = f;
+      })
     };
 
 
@@ -184,11 +49,8 @@ angular.module('restaurant.controllers', [])
 
 
   /*Tab Controllers*/
-  .controller('menuTabCtrl', function ($scope, $state, $http, $ionicPopup, AuthService, Status, UserService, $ionicLoading, $ionicActionSheet) {
+  .controller('menuTabCtrl', function ($scope, $state, $http, $ionicPopup, Status) {
     console.info("Controller execute: menuTabCtrl");
-
-
-    $scope.user = UserService.getUser();
 
     $scope.status = {
       time: null,
@@ -243,31 +105,6 @@ angular.module('restaurant.controllers', [])
       console.info('$ionicView.leave');
       watcher();
     });
-
-    $scope.performValidRequest = function () {
-      $http.get('http://localhost:8100/valid').then(
-        function (result) {
-          $scope.response = result;
-        });
-    };
-
-    $scope.performUnauthorizedRequest = function () {
-      $http.get('http://localhost:8100/notauthorized').then(
-        function (result) {
-          // No result here..
-        }, function (err) {
-          $scope.response = err;
-        });
-    };
-
-    $scope.performInvalidRequest = function () {
-      $http.get('http://localhost:8100/notauthenticated').then(
-        function (result) {
-          // No result here..
-        }, function (err) {
-          $scope.response = err;
-        });
-    };
 
   })
 
@@ -548,9 +385,21 @@ angular.module('restaurant.controllers', [])
 
 
 
+  /*Navigator*/
+  .controller('menuCtrl', ['$scope', '$stateParams', '$state', 'User', function ($scope, $stateParams, $state, User) {
+    console.info("Controller execute: menuCtrl");
 
+    $scope.showLogOutMenu = function () {
+      User.doLogout().then(function (s) {
 
+        $scope.s = s;
+      }, function (f) {
+        $scope.f = f;
+      });
+      $state.go('login');
+    }
 
+  }])
 
 
   /*Other*/
