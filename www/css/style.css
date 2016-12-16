@@ -53,18 +53,18 @@ ion-nav-view.view-container {
 }
 
 ion-view.pane {
-  /* background: #30637b; */
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#b5bdc8+0,828c95+36,28343b+100;Grey+Black+3D */
-  background: #b5bdc8; /* Old browsers */
-  background: -moz-linear-gradient(top,  #b5bdc8 0%, #828c95 36%, #28343b 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', endColorstr='#28343b',GradientType=0 ); /* IE6-9 */
+  background: rgb(30, 31, 32);
 }
 
 .bar.bar-stable {
   border-color: #434343;
   background-color: rgb(29, 31, 32);
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffa84c+0,ff7b0d+100;Orange+3D */
+  background: rgb(255,168,76); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(255,168,76,1) 0%, rgba(255,123,13,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(255,168,76,1) 0%,rgba(255,123,13,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(255,168,76,1) 0%,rgba(255,123,13,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffa84c', endColorstr='#ff7b0d',GradientType=0 ); /* IE6-9 */
 }
 
 .bar-stable .button.button-clear {
@@ -77,9 +77,10 @@ ion-view.pane {
 
 .menu {
   background-color: #1d1f20;
+  background: url(../img/6b281f62.png);
 }
 
-.menu_bar_item {/* border-color: #444444; */background-color: rgb(29, 31, 32);color: #ffffff !important;border-width: 0px;}
+.menu_bar_item {/* border-color: #444444; */background-color: rgba(0, 0, 0, 0);color: #ffffff !important;border-width: 0px;margin: 2px;}
 
 
 
@@ -88,6 +89,12 @@ ion-view.pane {
   background: transparent;
   background-color: #1d1f20;
   border-color: #434343;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffa84c+0,ff7b0d+100;Orange+3D */
+  background: rgb(255,168,76); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(255,168,76,1) 0%, rgba(255,123,13,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(255,168,76,1) 0%,rgba(255,123,13,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(255,168,76,1) 0%,rgba(255,123,13,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffa84c', endColorstr='#ff7b0d',GradientType=0 ); /* IE6-9 */
 }
 
 .bar.bar-stable .title {
@@ -376,15 +383,15 @@ md-checkbox.md-default-theme:not([disabled]).md-warn .md-ink-ripple, md-checkbox
 
 
 .welcome-logo{
-  background: rgba(29, 31, 32, 0.47);
+  background: rgba(0, 0, 0, 0.3);
   /* border: 1px; */
   margin-bottom: 5px;
   min-height: 144px;
-  border-bottom: 1px;
-  border-style: solid;
-  border-color: rgba(90, 90, 90, 0.8);
-  border-radius: 0px;
-  box-shadow: 0px 0px 4px 2px rgb(81, 92, 100);
+  /* border-bottom: 1px; */
+  /* border-style: solid; */
+  /* border-color: rgba(90, 90, 90, 0.8); */
+  /* border-radius: 0px; */
+  box-shadow: inset 0px 0px 19px 10px rgb(30, 31, 32);
   padding: 15px;
 }
 
