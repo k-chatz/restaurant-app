@@ -1,50 +1,55 @@
 angular.module('restaurant.controllers', [])
 
-  .controller('mainCtrl', function ($scope, $state, $ionicPopup, User, AUTH_EVENTS) {
+  .controller('mainCtrl', function ($rootScope, $scope, $state, $cordovaToast, User, AUTH_EVENTS) {
     console.info("Controller execute: mainCtrl'");
 
-    $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
-      $ionicPopup.alert({
-        title: 'Unauthorized!',
-        template: 'You are not allowed to access this resource.'
-      }).then(function () {
+    $scope.$on(AUTH_EVENTS.notAuthorized, function (event) {
+      $cordovaToast.show('Unauthorized: You are not allowed to access this resource!', 'long', 'center');
+    });
 
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event) {
+      $cordovaToast.show('Session Lost: Sorry, You have to login again!', 'long', 'center').then(function () {
+        User.doLogout().then(function () {
+          $state.go('login');
+        });
       });
     });
 
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
-      $ionicPopup.alert({
-        title: 'Session Lost!',
-        template: 'Sorry, You have to login again.'
-      }).then(function () {
-        User.doLogout();
-        $state.go('login');
-      });
+    $rootScope.$on('$cordovaNetwork:offline', function (event, networkState) {
+      $cordovaToast.show('The Internet connection is lost!', 'long', 'center');
     });
 
-    /*TODO: Add watchers to disable/enable this tabs*/
+    /*TODO: USER SERVICE->GET_ROLE() Add watchers to disable/enable this tabs*/
     $scope.menuTabActive = true;
     $scope.takeTabActive = true;
 
     /*False if user isn't boarder*/
     $scope.giveTabActive = true;
+
   })
 
   /*User*/
-  .controller('loginCtrl', function ($scope, $state, User, Status) {
+  .controller('loginCtrl', function ($rootScope, $cordovaToast, $cordovaNetwork, $scope, $state, User) {
     console.info("Controller execute: loginCtrl");
 
     $scope.login = function () {
-      User.doLogin().then(function (data) {
-        Status.start(5000);
-        $state.go('tab.menu');
-      }, function (f) {
-        $scope.status = f;
-      })
+      if ($cordovaNetwork.isOnline()) {
+        User.doLogin().then(function (data) {
+          $state.go('tab.menu');
+          if(User.isNew()) {
+            $cordovaToast.show('Your registration was completed successfully. Welcome!', 'long', 'center');
+          }
+        }, function (data) {
+          /*TODO: error in toast message*/
+          $cordovaToast.show('Connect fail! Error: ' + data.error.message, 'long', 'center');
+        })
+      }
+      else {
+        $cordovaToast.show('No internet connection found!', 'long', 'center');
+      }
     };
 
   })
-
 
 
   /*Tab Controllers*/
@@ -359,20 +364,32 @@ angular.module('restaurant.controllers', [])
 
 
   /*Navigator*/
-  .controller('menuCtrl', ['$scope', '$stateParams', '$state', 'User', function ($scope, $stateParams, $state, User) {
+  .controller('menuCtrl', function ($scope, $stateParams, $cordovaNetwork, $cordovaToast, $state, User) {
     console.info("Controller execute: menuCtrl");
 
     $scope.showLogOutMenu = function () {
-      User.doLogout().then(function (s) {
 
-        $scope.s = s;
-      }, function (f) {
-        $scope.f = f;
-      });
-      $state.go('login');
+      /*TODO: Show logout menu*/
+
+      if ($cordovaNetwork.isOnline()) {
+        if (User.isAuthenticated()) {
+          User.doLogout().then(function (s) {
+            $state.go('login').then(function () {
+              $cordovaToast.show('Sign-Out successfully!', 'long', 'center');
+            });
+          }, function (f) {
+            $cordovaToast.show('Sign-Out failed!', 'long', 'center');
+          });
+        } else {
+          $cordovaToast.show('Already Sign-Out!', 'long', 'center');
+        }
+      }
+      else {
+        $cordovaToast.show('No internet connection found!', 'long', 'center');
+      }
     }
 
-  }])
+  })
 
 
   /*Other*/

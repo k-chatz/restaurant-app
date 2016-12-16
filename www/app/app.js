@@ -106,10 +106,8 @@ angular.module('restaurant', [
     $urlRouterProvider.otherwise('/login');
   })
 
-  .run(function ($rootScope, $state, User, AUTH_EVENTS) {
+  .run(function ($rootScope, $state, User, Status, AUTH_EVENTS, $cordovaToast) {
     $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-
-      console.log(next);
       if ('data' in next && 'authorizedRoles' in next.data) {
         var authorizedRoles = next.data.authorizedRoles;
         if (!User.isAuthorized(authorizedRoles)) {
@@ -120,12 +118,20 @@ angular.module('restaurant', [
       }
 
       if (!User.isAuthenticated()) {
+        Status.stop();
         if (["login", "help", "about"].indexOf(next.name) == -1) {
           event.preventDefault();
           $state.go('login');
         }
       }
-
+      else{
+        Status.start(5000);
+        if(next.name == 'login'){
+          event.preventDefault();
+          $state.go('tab.menu');
+          $cordovaToast.showShortCenter('Already Sign-In!');
+        }
+      }
     });
   })
 

@@ -118,7 +118,9 @@ angular.module('restaurant.services', [])
     }
 
     function start(msec) {
+
       if (clock === null) {
+        console.log("START TIMER");
         clock = $interval(refresh, msec);
       }
       refresh();
@@ -291,12 +293,14 @@ angular.module('restaurant.services', [])
     }
   }])
 
-  .service('User', ['envService', '$cordovaSpinnerDialog', '$ionicLoading', '$q', '$http', 'Facebook', 'USER_ROLES', function (envService, $cordovaSpinnerDialog, $ionicLoading, $q, $http, Facebook, USER_ROLES) {
+  .service('User', ['envService', '$cordovaSpinnerDialog', '$cordovaToast', '$q', '$http', 'Facebook', 'USER_ROLES', function (envService, $cordovaSpinnerDialog, $cordovaToast, $q, $http, Facebook, USER_ROLES) {
 
     var LOCAL_TOKEN_KEY = null;
-    var isAuthenticated = false;
+    var isNew = false;
     var role = '';
     var authToken;
+    var service = {};
+    service.online = false;
 
     function loadUserCredentials() {
       var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
@@ -311,7 +315,7 @@ angular.module('restaurant.services', [])
     }
 
     function useCredentials(token) {
-      isAuthenticated = true;
+      service.online = true;
       authToken = token;
 
       /*TODO: Get userRole from token data*/
@@ -323,44 +327,28 @@ angular.module('restaurant.services', [])
 
     function destroyUserCredentials() {
       authToken = undefined;
-      isAuthenticated = false;
+      service.online = false;
       $http.defaults.headers.common['X-Auth-Token'] = undefined;
       window.localStorage.removeItem(LOCAL_TOKEN_KEY);
       delete $http.defaults.headers.common.authorization;
     }
 
-    var isAuthorized = function(authorizedRoles) {
+    var isAuthorized = function (authorizedRoles) {
       if (!angular.isArray(authorizedRoles)) {
         authorizedRoles = [authorizedRoles];
       }
-      return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
+      return (service.online && authorizedRoles.indexOf(role) !== -1);
     };
-
-    loadUserCredentials();
-
-    var service = {};
-    service.doLogin = doLogin;
-    service.doLogout = doLogout;
-    service.isAuthorized = isAuthorized;
-    service.isAuthenticated = function () {
-      return isAuthenticated;
-    };
-    service.role = function () {
-      return role;
-    };
-    service.debugLogin = function (token) {
-      storeUserCredentials(token);
-    }
-    service.debugLogout = function () {
-      destroyUserCredentials();
-    }
-    return service;
 
     function doLogin() {
       var info = $q.defer();
-      if (!isAuthenticated) {
+      if (!service.online) {
         Facebook.login().then(function (s) {
-          $cordovaSpinnerDialog.show("User Checking", "The Facebook login was completed successfully! Now waiting for the application's server response...", true);
+          $cordovaSpinnerDialog.show(
+            "Connecting..",
+            "Processing the information you provided by facebook.",
+            true
+          );
           $http({
             method: 'POST',
             cache: false,
@@ -370,28 +358,21 @@ angular.module('restaurant.services', [])
             data: {fbAccessToken: s.authResponse.accessToken},
             timeout: envService.read('timeout')
           }).then(function (success) {
+            isNew = success.data.userIsNew;
             storeUserCredentials(success.data.jwt);
             info.resolve(success.data);
             $cordovaSpinnerDialog.hide();
           }, function (fail) {
-            info.reject(fail);
+            info.reject(fail.data);
             $cordovaSpinnerDialog.hide();
-            $ionicLoading.hide();
-            $ionicLoading.show({
-              template: '<h3 style="color:red">It seems something went wrong!</h3>',
-              duration: 3000
-            });
           })
         }, function (f) {
           info.reject(f);
         });
       }
       else {
-        $ionicLoading.show({
-          template: 'Already logged in!',
-          duration: 1000
-        });
-        info.reject({error: {message: "Already logged in!"}});
+        $cordovaToast.show('Already Sign-In!', 'long', 'center');
+        info.resolve("Already Sign-In!");
       }
       return info.promise;
     }
@@ -407,6 +388,30 @@ angular.module('restaurant.services', [])
       });
       return info.promise;
     }
+
+    service.doLogin = doLogin;
+    service.doLogout = doLogout;
+    service.isAuthorized = isAuthorized;
+    service.isAuthenticated = function () {
+      return service.online;
+    };
+    service.role = function () {
+      return role;
+    };
+    service.isNew = function () {
+      return isNew;
+    }
+    service.debugLogin = function (token) {
+      storeUserCredentials(token);
+    };
+    service.debugLogout = function () {
+      destroyUserCredentials();
+    };
+
+    loadUserCredentials();
+
+    return service;
+
   }])
 
   /*:::::User authorization:::::*/
