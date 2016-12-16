@@ -394,31 +394,269 @@ angular.module('restaurant.controllers', [])
 
   /*Other*/
 
-  .controller('helpCtrl', function ($scope, $stateParams, Status, User) {
-      console.info("Controller execute: helpCtrl");
+  .controller('helpCtrl', function ($rootScope, $scope, $stateParams, Status, User, $cordovaDialogs, $ionicPlatform, $cordovaLocalNotification, $cordovaNetwork, $cordovaToast) {
+    console.info("Controller execute: helpCtrl");
 
-      $scope.debugLogin = function (token) {
-        console.info("Login!");
-        User.debugLogin(token);
+    $scope.debugLogin = function (token) {
+      console.info("Login!");
+      User.debugLogin(token);
+    };
+
+    $scope.debugLogout = function (token) {
+      console.info("Logout!");
+      User.debugLogout();
+    };
+
+    $scope.start = function () {
+      console.info("Start Timer");
+      Status.start(1000);
+    };
+
+    $scope.stop = function () {
+      console.info("Stop Timer");
+      Status.stop();
+    };
+
+    $scope.beep = function () {
+      $cordovaDialogs.beep(3);
+    };
+
+    $scope.confirm = function () {
+      $cordovaDialogs.confirm('message', 'title', ['button 1', 'button 2'])
+        .then(function (buttonIndex) {
+          // no button = 0, 'OK' = 1, 'Cancel' = 2
+          var btnIndex = buttonIndex;
+        });
+    };
+
+    $scope.prompt = function () {
+      $cordovaDialogs.prompt('Enter your card number', 'Card Number', ['btn 1', 'btn 2'], 'default text')
+        .then(function (result) {
+          var input = result.input1;
+          // no button = 0, 'OK' = 1, 'Cancel' = 2
+          var btnIndex = result.buttonIndex;
+        });
+    }
+
+    $ionicPlatform.ready(function () {
+
+      // ========== Scheduling
+
+      $scope.scheduleSingleNotification = function () {
+        $cordovaLocalNotification.schedule({
+          id: 1,
+          title: 'Restaurant',
+          text: 'Number found!',
+          data: {
+            customProperty: 'custom value'
+          }
+        }).then(function (result) {
+          //alert(result);
+        });
       };
 
-      $scope.debugLogout = function (token) {
-        console.info("Logout!");
-        User.debugLogout();
+      $scope.scheduleMultipleNotifications = function () {
+        $cordovaLocalNotification.schedule([
+          {
+            id: 1,
+            title: 'Title 1 here',
+            text: 'Text 1 here',
+            data: {
+              customProperty: 'custom 1 value'
+            }
+          },
+          {
+            id: 2,
+            title: 'Title 2 here',
+            text: 'Text 2 here',
+            data: {
+              customProperty: 'custom 2 value'
+            }
+          },
+          {
+            id: 3,
+            title: 'Title 3 here',
+            text: 'Text 3 here',
+            data: {
+              customProperty: 'custom 3 value'
+            }
+          }
+        ]).then(function (result) {
+          // ...
+        });
       };
 
-      $scope.start = function () {
-        console.info("Start Timer");
-        Status.start(5000);
+      $scope.scheduleDelayedNotification = function () {
+        var now = new Date().getTime();
+        var _10SecondsFromNow = new Date(now + 10 * 1000);
+
+        $cordovaLocalNotification.schedule({
+          id: 1,
+          title: 'Title here',
+          text: 'Text here',
+          at: _10SecondsFromNow
+        }).then(function (result) {
+          // ...
+        });
       };
 
-      $scope.stop = function () {
-        console.info("Stop Timer");
-        Status.stop();
+      $scope.scheduleEveryMinuteNotification = function () {
+        $cordovaLocalNotification.schedule({
+          id: 1,
+          title: 'Title here',
+          text: 'Text here',
+          every: 'minute'
+        }).then(function (result) {
+          // ...
+        });
       };
 
+      // =========/ Scheduling
 
-    })
+      // ========== Update
+
+      $scope.updateSingleNotification = function () {
+        $cordovaLocalNotification.update({
+          id: 1,
+          title: 'Title - UPDATED',
+          text: 'Text - UPDATED'
+        }).then(function (result) {
+          // ...
+        });
+      };
+
+      $scope.updateMultipleNotifications = function () {
+        $cordovaLocalNotification.update([
+          {
+            id: 1,
+            title: 'Title 1 - UPDATED',
+            text: 'Text 1 - UPDATED'
+          },
+          {
+            id: 2,
+            title: 'Title 2 - UPDATED',
+            text: 'Text 2 - UPDATED'
+          },
+          {
+            id: 3,
+            title: 'Title 3 - UPDATED',
+            text: 'Text 3 - UPDATED'
+          }
+        ]).then(function (result) {
+          // ...
+        });
+      };
+
+      // =========/ Update
+
+      // ========== Cancelation
+
+      $scope.cancelSingleNotification = function () {
+        $cordovaLocalNotification.cancel(1).then(function (result) {
+          // ...
+        });
+      };
+
+      $scope.cancelMultipleNotifications = function () {
+        $cordovaLocalNotification.cancel([1, 2]).then(function (result) {
+          // ...
+        });
+      };
+
+      $scope.cancelAllNotifications = function () {
+        $cordovaLocalNotification.cancelAll().then(function (result) {
+          // ...
+        });
+      };
+
+      // =========/ Cancelation
+
+      // ========== Events
+
+      $rootScope.$on('$cordovaLocalNotification:schedule',
+        function (event, notification, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:trigger',
+        function (event, notification, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:update',
+        function (event, notification, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:clear',
+        function (event, notification, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:clearall',
+        function (event, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:cancel',
+        function (event, notification, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:cancelall',
+        function (event, state) {
+          // ...
+        });
+
+      $rootScope.$on('$cordovaLocalNotification:click',
+        function (event, notification, state) {
+          // ...
+        });
+
+      // =========/ Events
+
+    });
+
+    $scope.nettype = function () {
+      $scope.net_type = $cordovaNetwork.getNetwork();
+    };
+
+    $scope.netisOnline = function () {
+      $scope.net_isOnline = $cordovaNetwork.isOnline();
+    };
+
+    $scope.netisOffline = function () {
+      $scope.net_isOffline = $cordovaNetwork.isOffline();
+    };
+
+    $scope.toast = function () {
+      $cordovaToast
+        .show('Here is a message', 'long', 'center')
+        .then(function (success) {
+          // success
+        }, function (error) {
+          // error
+        });
+    }
+
+    $scope.toast_showShortTop = function () {
+      $cordovaToast.showShortTop('Here is a message').then(function (success) {
+        // success
+      }, function (error) {
+        // error
+      });
+    }
+
+    $scope.toast_showLongBottom = function () {
+      $cordovaToast.showLongBottom('Here is a message').then(function (success) {
+        // success
+      }, function (error) {
+        // error
+      });
+    }
+
+
+  })
 
   .controller('aboutCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {
