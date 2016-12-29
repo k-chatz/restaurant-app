@@ -415,18 +415,32 @@ angular.module('restaurant.services', [])
   }])
 
   /*:::::User authorization:::::*/
-  .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
-    return {
+  .factory('Interceptor', ['$rootScope', '$q', 'AUTH_EVENTS', function ($rootScope, $q, AUTH_EVENTS) {
+    var interceptor = {
+      request: function (config) {
+        $rootScope.$broadcast('processing', {status: true, url: config.url});
+        config.requestTimestamp = new Date().getTime();
+        return config;
+      },
+      response: function (response) {
+        $rootScope.$broadcast('processing', {status: false, url: null});
+        response.config.responseTimestamp = new Date().getTime();
+        return response;
+      },
       responseError: function (response) {
+        $rootScope.$broadcast('processing', {status: false, url: null});
         $rootScope.$broadcast({
           401: AUTH_EVENTS.notAuthenticated,
-          403: AUTH_EVENTS.notAuthorized
-        }[response.status], response);
+          403: AUTH_EVENTS.notAuthorized,
+          500: AUTH_EVENTS.internalServerError
+        }[response.status], response.data.error.type + ': ' + response.data.error.message);
+        //alert( JSON.stringify(response,null,"    ") );
         return $q.reject(response);
       }
     };
-  })
+    return interceptor;
+  }])
 
-  .config(function ($httpProvider) {
-    $httpProvider.interceptors.push('AuthInterceptor');
-  });
+  .config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.interceptors.push('Interceptor');
+  }]);

@@ -5,15 +5,27 @@ angular.module('restaurant.controllers', [])
 
     $scope.$on(AUTH_EVENTS.notAuthorized, function (event) {
       $cordovaToast.show('Unauthorized: You are not allowed to access this resource!', 'long', 'center');
+    $scope.$on('processing', function (event, v) {
+      $scope.processing = v.status;
     });
 
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event) {
-      $cordovaToast.show('Session Lost: Sorry, You have to login again!', 'long', 'center').then(function () {
+
+    $scope.$on(AUTH_EVENTS.notAuthorized, function (event, message) {
+      $cordovaToast.show('Unauthorized!\n' + message, 'long', 'center');
+    });
+
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, message) {
+      $cordovaToast.show('Session expired!\nYou have to login again...', 'long', 'center').then(function () {
         User.doLogout().then(function () {
           $state.go('login');
         });
       });
     });
+
+    $scope.$on(AUTH_EVENTS.internalServerError, function (event, message) {
+      $cordovaToast.show('Internal Server Error!\n' + message, 'long', 'center');
+    });
+
 
     $rootScope.$on('$cordovaNetwork:offline', function (event, networkState) {
       $cordovaToast.show('The Internet connection is lost!', 'long', 'center');
