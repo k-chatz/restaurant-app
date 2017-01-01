@@ -184,4 +184,11 @@ angular.module('restaurant', [
 
     envServiceProvider.set('production');
 
-  });
+  })
+
+  /*To fix twice popup dialogs who fired up twice when user do tap's to it.
+  * (bug: ionic.bundle.js causes ng-click event to fire 2x)*/
+.config(function($mdGestureProvider) {
+  $mdGestureProvider.skipClickHijack();
+})
+;
