@@ -5,7 +5,6 @@
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
   <title></title>
 
-
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
 
   <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -36,6 +35,8 @@
 
 
   <link href="css/style.css" rel="stylesheet">
+  <link async href="lib/open-sans.css" data-generated="http://enjoycss.com" rel="stylesheet" type="text/css"/>
+
 
   <script src="app/app.js"></script>
   <script src="app/constants.js"></script>
@@ -50,10 +51,10 @@
   -->
 </head>
 
-<body ng-app="restaurant" ng-controller="mainCtrl" animation="slide-left-right-ios7">
+<body style="background: black" ng-app="restaurant" ng-controller="mainCtrl" animation="slide-left-right-ios7">
 
 <ion-side-menus enable-menu-with-back-views="false" data-componentid="side-menu21">
-    <ion-side-menu-content>
+    <ion-side-menu-content drag-content="false">
 
       <!--Nav bar-->
       <ion-nav-bar class="bar-stable">
@@ -64,7 +65,7 @@
         </ion-nav-buttons>
       </ion-nav-bar>
 
-      <ion-nav-view></ion-nav-view>
+      <ion-nav-view animation="slide-left-right"></ion-nav-view>
 
     </ion-side-menu-content>
 
@@ -74,7 +75,7 @@
         <div class="title">Menu</div>
       </ion-header-bar>
 
-      <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header ">
+      <ion-content ng-controller="menuCtrl" padding="false" class="side-menu-left has-header">
         <div class="list">
           <a menu-close class="item item-icon-left menu_bar_item" href="#/tab/menu">
             <i class="icon ion-ios-home-outline"></i>
@@ -93,9 +94,6 @@
             <i class="icon ion-log-out"></i>
             Sign-out
           </a>
-
-          <hr style="border: 2px solid #434343; margin: 0;">
-
           <a menu-close class="item item-icon-left menu_bar_item" href="#/help">
             <i class="icon ion-help"></i>
             Help

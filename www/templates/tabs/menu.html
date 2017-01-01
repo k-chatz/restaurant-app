@@ -4,7 +4,7 @@
     <ion-spinner style="stroke: #ffffff; fill: #ffffff;" ng-show="processing"></ion-spinner>
   </ion-nav-buttons>
 
-  <ion-content padding="true" scroll="false" class="has-header tab_content" style="text-align: center;">
+  <ion-content on-swipe-right="goBack()" on-swipe-left="goForward()" scroll="true" padding="true" class="has-header tab_content" style="text-align: center;">
 
     <div class="row card menu-card">
       <div class="col col-75 menu-col-75">

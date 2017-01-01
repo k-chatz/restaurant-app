@@ -4,7 +4,7 @@
     <ion-spinner style="stroke: #ffffff; fill: #ffffff;" ng-show="processing"></ion-spinner>
   </ion-nav-buttons>
 
-  <ion-content padding="false" class="has-header tab_content">
+  <ion-content on-swipe-right="goBack()" on-swipe-left="goForward()" padding="false" class="has-header tab_content">
 
     <!--Meal Buttons-->
     <div class="row meal_buttons">

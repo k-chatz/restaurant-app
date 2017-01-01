@@ -64,10 +64,25 @@ angular.module('restaurant.controllers', [])
 
   })
 
-
   /*Tab Controllers*/
-  .controller('menuTabCtrl', function ($scope, $state, $http, $ionicPopup, Status) {
+  .controller('menuTabCtrl', function ($scope, $state, $ionicTabsDelegate, $http, $ionicPopup, Status, Menu, Take, Give) {
     console.info("Controller execute: menuTabCtrl");
+
+    $scope.goForward = function () {
+      var selected = $ionicTabsDelegate.selectedIndex();
+      if (selected != -1) {
+        $ionicTabsDelegate.select(selected + 1);
+      }
+    };
+
+    $scope.goBack = function () {
+      var selected = $ionicTabsDelegate.selectedIndex();
+      if (selected != -1 && selected != 0) {
+        $ionicTabsDelegate.select(selected - 1);
+      }
+    };
+
+
 
     $scope.status = {
       time: null,
@@ -125,9 +140,27 @@ angular.module('restaurant.controllers', [])
 
   })
 
-  .controller('takeTabCtrl', ['$rootScope', '$scope', '$interval', '$stateParams', 'Status', 'Take',
-    function ($rootScope, $scope, $interval, $stateParams, Status, Take) {
+
+  .controller('takeTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$interval', '$stateParams', 'Status', 'Take',
+    function ($rootScope, $scope, $ionicTabsDelegate, $interval, $stateParams, Status, Take) {
       console.info("Controller execute: takeTabCtrl");
+
+      $scope.goForward = function () {
+        var selected = $ionicTabsDelegate.selectedIndex();
+        if (selected != -1) {
+          $ionicTabsDelegate.select(selected + 1);
+        }
+      };
+
+      $scope.goBack = function () {
+        var selected = $ionicTabsDelegate.selectedIndex();
+        if (selected != -1 && selected != 0) {
+          $ionicTabsDelegate.select(selected - 1);
+        }
+      };
+
+
+
       var watcher = null;
       $scope.status = {
         time: null,
@@ -218,9 +251,26 @@ angular.module('restaurant.controllers', [])
       };
     }])
 
-  .controller('giveTabCtrl', ['$rootScope', '$scope', '$interval', '$stateParams', 'Status', 'Give',
-    function ($rootScope, $scope, $interval, $stateParams, Status, Give) {
+
+  .controller('giveTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$interval', '$stateParams', 'Status', 'Give',
+    function ($rootScope, $scope, $ionicTabsDelegate, $interval, $stateParams, Status, Give) {
       console.info("Controller execute: giveTabCtrl");
+
+      $scope.goForward = function () {
+        var selected = $ionicTabsDelegate.selectedIndex();
+        if (selected != -1) {
+          $ionicTabsDelegate.select(selected + 1);
+        }
+      };
+
+      $scope.goBack = function () {
+        var selected = $ionicTabsDelegate.selectedIndex();
+        if (selected != -1 && selected != 0) {
+          $ionicTabsDelegate.select(selected - 1);
+        }
+      };
+
+
       var watcher = null;
       $scope.status = {
         time: null,
