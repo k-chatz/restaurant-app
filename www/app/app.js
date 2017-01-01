@@ -97,7 +97,7 @@ angular.module('restaurant', [
       .state('settings', {
         url: '/settings',
         templateUrl: 'templates/settings.html',
-        controller: 'aboutCtrl',
+        controller: 'settingsCtrl',
         data: {
           authorizedRoles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
         }
@@ -113,7 +113,7 @@ angular.module('restaurant', [
         if (!User.isAuthorized(authorizedRoles)) {
           event.preventDefault();
           $state.go($state.current, {}, {reload: true});
-          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, "Login first!");
         }
       }
 
@@ -124,9 +124,9 @@ angular.module('restaurant', [
           $state.go('login');
         }
       }
-      else{
-        Status.start(5000);
-        if(next.name == 'login'){
+      else {
+        Status.start(10000);
+        if (next.name == 'login') {
           event.preventDefault();
           $state.go('tab.menu');
           $cordovaToast.showShortCenter('Already Sign-In!');
@@ -147,6 +147,8 @@ angular.module('restaurant', [
         development: {
           apiUrl: 'http://192.168.1.3/ionic/Restaurant-API',
           userDoConnectPath: '/user/do/connect',
+          userDoDelinkPath: '/user/do/delink',
+          menuPath: '/menu',
           statusInfoPath: '/status/info',
           takeQuestionPath: '/take/question',
           takeCancelPath: '/take/cancel',
@@ -162,6 +164,8 @@ angular.module('restaurant', [
         production: {
           apiUrl: 'http://83.212.118.209/Restaurant-API',
           userDoConnectPath: '/user/do/connect',
+          userDoDelinkPath: '/user/do/delink',
+          menuPath: '/menu',
           statusInfoPath: '/status/info',
           takeQuestionPath: '/take/question',
           takeCancelPath: '/take/cancel',
@@ -172,7 +176,7 @@ angular.module('restaurant', [
           giveCancelPath: '/give/cancel',
           giveConfirmPath: '/give/confirm',
           giveRejectPath: '/give/reject',
-          timeout: 10000
+          timeout: 20000
         }
       }
     });

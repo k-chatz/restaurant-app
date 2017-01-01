@@ -47,17 +47,18 @@ angular.module('restaurant.controllers', [])
     $scope.login = function () {
       if ($cordovaNetwork.isOnline()) {
         User.doLogin().then(function (data) {
-          $state.go('tab.menu');
-          if(User.isNew()) {
-            $cordovaToast.show('Your registration was completed successfully. Welcome!', 'long', 'center');
-          }
+          $state.go('tab.menu').then(function () {
+            if (User.isNew()) {
+              $cordovaToast.show('Your registration was completed successfully!\n\nWelcome :)', 'long', 'center');
+            }
+          });
         }, function (data) {
           /*TODO: error in toast message*/
-          $cordovaToast.show('Connect fail! Error: ' + data.error.message, 'long', 'center');
+          $cordovaToast.show('Oops something went wrong!\nPlease try again later...', 'long', 'center');
         })
       }
       else {
-        $cordovaToast.show('No internet connection found!', 'long', 'center');
+        $cordovaToast.show('No internet connection!', 'long', 'center');
       }
     };
 
@@ -376,29 +377,46 @@ angular.module('restaurant.controllers', [])
 
 
   /*Navigator*/
-  .controller('menuCtrl', function ($scope, $stateParams, $cordovaNetwork, $cordovaToast, $state, User) {
+  .controller('menuCtrl', function ($rootScope, $scope, $stateParams, $cordovaActionSheet, $cordovaNetwork, $cordovaToast, $state, User) {
     console.info("Controller execute: menuCtrl");
+
+    var watcher = $scope.$watch(function () {
+      return User.isAuthenticated();
+    }, function (is) {
+      $scope.isLoggedIn = is;
+    }, true);
 
     $scope.showLogOutMenu = function () {
 
-      /*TODO: Show logout menu*/
+      /*Show logout confirm dialog*/
+      document.addEventListener("deviceready", function () {
+        if ($cordovaNetwork.isOnline()) {
+          var options = {
+            title: 'Are you sure you want to Sign-Out ?',
+            buttonLabels: ['Yes', 'No']
+          };
 
-      if ($cordovaNetwork.isOnline()) {
-        if (User.isAuthenticated()) {
-          User.doLogout().then(function (s) {
-            $state.go('login').then(function () {
-              $cordovaToast.show('Sign-Out successfully!', 'long', 'center');
+          $cordovaActionSheet.show(options)
+            .then(function (btnIndex) {
+              if (btnIndex == 1) {
+                if (User.isAuthenticated()) {
+                  User.doLogout().then(function (s) {
+                    $state.go('login').then(function () {
+                      $cordovaToast.show('Sign-Out successfully!', 'long', 'center');
+                    });
+                  }, function (f) {
+                    $cordovaToast.show('Sign-Out failed!', 'long', 'center');
+                  });
+                } else {
+                  $cordovaToast.show('Already Sign-Out!', 'long', 'center');
+                }
+              }
             });
-          }, function (f) {
-            $cordovaToast.show('Sign-Out failed!', 'long', 'center');
-          });
-        } else {
-          $cordovaToast.show('Already Sign-Out!', 'long', 'center');
         }
-      }
-      else {
-        $cordovaToast.show('No internet connection found!', 'long', 'center');
-      }
+        else {
+          $cordovaToast.show('No internet connection found!', 'long', 'center');
+        }
+      }, false);
     }
 
   })
@@ -669,6 +687,28 @@ angular.module('restaurant.controllers', [])
 
 
   })
+
+  .controller('settingsCtrl', ['$scope', '$state', '$stateParams', '$cordovaToast', 'User', 'Status',
+    function ($scope, $state, $stateParams, $cordovaToast, User, Status) {
+      console.info("Controller execute: settingsCtrl");
+
+      $scope.deleteAccount = function () {
+        Status.stop();
+        User.doDelete().then(function (s) {
+          if (s.fbDelinking == true && s.userDeleted == 1) {
+            User.doLogout().then(function (s) {
+              $state.go('login').then(function () {
+                $cordovaToast.show('Your facebook delinking and your account deletion was successfully done.\n\nGood bye user :(', 'long', 'center');
+              });
+            });
+          }else{
+            alert("Please try again later..");
+          }
+        },function (f) {
+          $cordovaToast.show('Oops something went wrong!\nPlease try again later...', 'long', 'center');
+        })
+      }
+    }])
 
   .controller('aboutCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {

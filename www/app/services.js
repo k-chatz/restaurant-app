@@ -356,7 +356,7 @@ angular.module('restaurant.services', [])
             url: envService.read('apiUrl') + envService.read('userDoConnectPath'),
             headers: {'Content-Type': 'application/json'},
             data: {fbAccessToken: s.authResponse.accessToken},
-            timeout: envService.read('timeout')
+            timeout: 30000
           }).then(function (success) {
             isNew = success.data.userIsNew;
             storeUserCredentials(success.data.jwt);
@@ -406,6 +406,29 @@ angular.module('restaurant.services', [])
     };
     service.debugLogout = function () {
       destroyUserCredentials();
+    };
+    service.doDelete = function () {
+      var info = $q.defer();
+      $cordovaSpinnerDialog.show(
+        "Delinking..",
+        "Delinking your facebook account from application and deleting all information about you from app's database.",
+        true
+      );
+      $http({
+        method: 'POST',
+        cache: false,
+        crossDomain: true,
+        url: envService.read('apiUrl') + envService.read('userDoDelinkPath'),
+        headers: {'Content-Type': 'application/json'},
+        timeout: 30000
+      }).then(function (s) {
+        info.resolve(s.data);
+        $cordovaSpinnerDialog.hide();
+      }, function (f) {
+        info.reject(f);
+        $cordovaSpinnerDialog.hide();
+      });
+      return info.promise;
     };
 
     loadUserCredentials();

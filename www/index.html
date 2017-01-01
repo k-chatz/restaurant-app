@@ -81,14 +81,15 @@
             Home
             <span class="item-note">Menu, Take, Give</span>
           </a>
-
-          <hr style="border: 2px solid #434343; margin: 0;">
-
-          <a menu-close class="item item-icon-left menu_bar_item" href="#/login">
+          <a menu-close class="item item-icon-left menu_bar_item" href="#/settings" ng-if="isLoggedIn">
+            <i class="icon ion-gear-a"></i>
+            Settings
+          </a>
+          <a menu-close class="item item-icon-left menu_bar_item" href="#/login" ng-if="!isLoggedIn">
             <i class="icon ion-log-in"></i>
             Sign-In
           </a>
-          <a menu-close class="item item-icon-left menu_bar_item" href="" ng-click="showLogOutMenu()">
+          <a menu-close class="item item-icon-left menu_bar_item" href="" ng-if="isLoggedIn" ng-click="showLogOutMenu()">
             <i class="icon ion-log-out"></i>
             Sign-out
           </a>
