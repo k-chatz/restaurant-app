@@ -61,7 +61,6 @@ angular.module('restaurant.controllers', [])
         $cordovaToast.show('No internet connection!', 'long', 'center');
       }
     };
-
   })
 
   /*Tab Controllers*/
@@ -123,12 +122,30 @@ angular.module('restaurant.controllers', [])
     };
 
     $scope.$on('$ionicView.enter', function (e) {
+
+      Menu.breakfast().then(function (data) {
+        $scope.breakfast = data.menu.meal;
+      }, function (error) {
+        $scope.breakfast = error.message;
+      });
+
+      Menu.lunch().then(function (data) {
+        $scope.lunch = data.menu.meal;
+      }, function (error) {
+        $scope.lunch = error.message;
+      });
+
+      Menu.dinner().then(function (data) {
+        $scope.dinner = data.menu.meal;
+      }, function (error) {
+        $scope.dinner = error.message;
+      });
+
       watcher = $scope.$watch(function () {
         return Status.data;
       }, function (data) {
         if (data.time != null && data.success != false) {
           $scope.status = data;
-          progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
         }
       }, true);
     });
