@@ -10,7 +10,8 @@ angular.module('restaurant', [
   'restaurant.services',
   'ionic-multi-date-picker',
   'environment',
-  'angular-jwt'])
+  'angular-jwt',
+  'ab-base64'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
@@ -148,6 +149,7 @@ angular.module('restaurant', [
           apiUrl: 'http://192.168.1.3/ionic/Restaurant-API',
           userDoConnectPath: '/user/do/connect',
           userDoDelinkPath: '/user/do/delink',
+          userDoInsertNumberPath: '/user/do/insert/number',
           menuPath: '/menu',
           statusInfoPath: '/status/info',
           takeQuestionPath: '/take/question',
@@ -165,6 +167,7 @@ angular.module('restaurant', [
           apiUrl: 'http://83.212.118.209/Restaurant-API',
           userDoConnectPath: '/user/do/connect',
           userDoDelinkPath: '/user/do/delink',
+          userDoInsertNumberPath: '/user/do/insert/number',
           menuPath: '/menu',
           statusInfoPath: '/status/info',
           takeQuestionPath: '/take/question',
@@ -182,7 +185,7 @@ angular.module('restaurant', [
     });
     envServiceProvider.check();
 
-    envServiceProvider.set('production');
+    envServiceProvider.set('development');
 
   })
 

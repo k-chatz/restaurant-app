@@ -1,14 +1,14 @@
 angular.module('restaurant.controllers', [])
 
+
   .controller('mainCtrl', function ($rootScope, $scope, $state, $cordovaToast, User, AUTH_EVENTS) {
     console.info("Controller execute: mainCtrl'");
 
-    $scope.$on(AUTH_EVENTS.notAuthorized, function (event) {
-      $cordovaToast.show('Unauthorized: You are not allowed to access this resource!', 'long', 'center');
+    //ionic.Platform.exitApp(); // stops the app
+
     $scope.$on('processing', function (event, v) {
       $scope.processing = v.status;
     });
-
 
     $scope.$on(AUTH_EVENTS.notAuthorized, function (event, message) {
       $cordovaToast.show('Unauthorized!\n' + message, 'long', 'center');
@@ -80,7 +80,6 @@ angular.module('restaurant.controllers', [])
         $ionicTabsDelegate.select(selected - 1);
       }
     };
-
 
 
     $scope.status = {
@@ -155,6 +154,18 @@ angular.module('restaurant.controllers', [])
       watcher();
     });
 
+    $scope.question = function (meal) {
+      Take.question(meal).then(function (response) {
+        Status.refresh();
+      });
+    };
+
+    $scope.offer = function (meal) {
+      Give.offer(meal).then(function (response) {
+        Status.refresh();
+      });
+    };
+
   })
 
 
@@ -175,7 +186,6 @@ angular.module('restaurant.controllers', [])
           $ionicTabsDelegate.select(selected - 1);
         }
       };
-
 
 
       var watcher = null;
@@ -269,8 +279,8 @@ angular.module('restaurant.controllers', [])
     }])
 
 
-  .controller('giveTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$interval', '$stateParams', 'Status', 'Give',
-    function ($rootScope, $scope, $ionicTabsDelegate, $interval, $stateParams, Status, Give) {
+  .controller('giveTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$cordovaBarcodeScanner', '$cordovaToast', '$interval', '$stateParams', 'User', 'Status', 'Give',
+    function ($rootScope, $scope, $ionicTabsDelegate, $cordovaBarcodeScanner, $cordovaToast, $interval, $stateParams, User, Status, Give) {
       console.info("Controller execute: giveTabCtrl");
 
       $scope.goForward = function () {
@@ -342,15 +352,43 @@ angular.module('restaurant.controllers', [])
       }
 
       $scope.$on('$ionicView.enter', function (e) {
-        watcher = $scope.$watch(function () {
-          return Status.data;
-        }, function (data) {
-          if (data.time != null && data.success != false) {
-            $scope.status = data;
-            $scope.offersByDate = $scope.status.offersByDate;
-            progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
-          }
-        }, true);
+
+
+        if (User.role() == 'V') {
+
+          $cordovaBarcodeScanner.scan()
+            .then(function (barcodeData) {
+              if (!barcodeData.cancelled && barcodeData.format == 'QR_CODE') {
+
+                /*TODO: Sent QR_CODE data to server, then server has to validate that data and response..*/
+
+                if (true) {
+                  alert(barcodeData.text);
+                  watcher = $scope.$watch(function () {
+                    return Status.data;
+                  }, function (data) {
+                    if (data.time != null && data.success != false) {
+                      $scope.status = data;
+                      $scope.offersByDate = $scope.status.offersByDate;
+                      progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
+                    }
+                  }, true);
+                } else {
+                  $state.go('tab.menu').then(function () {
+                    if (User.isNew()) {
+                      $cordovaToast.show('Error', 'long', 'center');
+                    }
+                  });
+                }
+
+
+              }
+            }, function (error) {
+              //alert(JSON.stringify(error));
+            });
+        }
+
+
       });
       $scope.$on('$ionicView.leave', function (e) {
         console.info('$ionicView.leave');
@@ -485,14 +523,63 @@ angular.module('restaurant.controllers', [])
         }
       }, false);
     }
-
   })
 
 
   /*Other*/
 
-  .controller('helpCtrl', function ($rootScope, $scope, $stateParams, Status, User, $cordovaDialogs, $ionicPlatform, $cordovaLocalNotification, $cordovaNetwork, $cordovaToast) {
+  .controller('helpCtrl', function (envService, $http, $rootScope, $ionicPopup, $scope, $cordovaBarcodeScanner, $cordovaDevice, $cordovaFlashlight, $cordovaVibration, $stateParams, Status, User, $cordovaDialogs, $ionicPlatform, $cordovaLocalNotification, $cordovaNetwork, $cordovaToast) {
     console.info("Controller execute: helpCtrl");
+
+    $scope.$on('$ionicView.enter', function (e) {
+      $scope.dev_token_data = null;
+      $http({
+        method: 'GET',
+        cache: false,
+        crossDomain: true,
+        url: envService.read('apiUrl') + '/user/token/data',
+        headers: {'Content-Type': 'application/json'},
+        timeout: envService.read('timeout')
+      }).then(function (success) {
+        $scope.dev_token_data = success.data;
+      }, function (fail) {
+        $scope.dev_token_data = fail.data;
+      });
+    });
+
+    $scope.showPopup = function () {
+      $scope.data = {};
+
+      // An elaborate, custom popup
+      var myPopup = $ionicPopup.show({
+        template: '<input type="text" ng-model="data.number"><input type="password" ng-model="data.number">',
+        title: 'Enter your food card number',
+        subTitle: 'Please use normal things',
+        scope: $scope,
+        buttons: [
+          {text: 'Cancel'},
+          {
+            text: '<b>Save</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              if (!$scope.data.number) {
+                //don't allow the user to close unless he enters a text
+                e.preventDefault();
+              } else {
+                return $scope.data.number;
+              }
+            }
+          }
+        ]
+      });
+
+      myPopup.then(function (res) {
+        alert(res);
+      });
+
+
+    };
+
 
     $scope.debugLogin = function (token) {
       console.info("Login!");
@@ -506,7 +593,7 @@ angular.module('restaurant.controllers', [])
 
     $scope.start = function () {
       console.info("Start Timer");
-      Status.start(1000);
+      Status.start(5000);
     };
 
     $scope.stop = function () {
@@ -521,8 +608,7 @@ angular.module('restaurant.controllers', [])
     $scope.confirm = function () {
       $cordovaDialogs.confirm('message', 'title', ['button 1', 'button 2'])
         .then(function (buttonIndex) {
-          // no button = 0, 'OK' = 1, 'Cancel' = 2
-          var btnIndex = buttonIndex;
+          alert(buttonIndex);
         });
     };
 
@@ -752,28 +838,129 @@ angular.module('restaurant.controllers', [])
       });
     }
 
+    $scope.vibration = function () {
+      $cordovaVibration.vibrate(5000);
+    }
+
+    $scope.Flashavailable = function () {
+      $cordovaFlashlight.available().then(function (availability) {
+        $scope.flashavail = availability; // is available
+      }, function () {
+        $scope.flashavail = null;
+      });
+    }
+
+    $scope.FlashswitchOn = function () {
+      $cordovaFlashlight.switchOn().then(
+        function (success) { /* success */
+        },
+        function (error) { /* error */
+        });
+    }
+
+    $scope.FlashswitchOff = function () {
+      $cordovaFlashlight.switchOff()
+        .then(
+          function (success) { /* success */
+          },
+          function (error) { /* error */
+          });
+    }
+
+    $scope.Flashtoggle = function () {
+      $cordovaFlashlight.toggle()
+        .then(function (success) { /* success */
+          },
+          function (error) { /* error */
+          });
+    }
+
+
+    document.addEventListener("deviceready", function () {
+
+      $scope.device = $cordovaDevice.getDevice();
+
+      $scope.cordova = $cordovaDevice.getCordova();
+
+      $scope.model = $cordovaDevice.getModel();
+
+      $scope.platform = $cordovaDevice.getPlatform();
+
+      $scope.uuid = $cordovaDevice.getUUID();
+
+      $scope.version = $cordovaDevice.getVersion();
+
+
+      $scope.scan = function () {
+        $cordovaBarcodeScanner.scan()
+          .then(function (barcodeData) {
+            if (!barcodeData.cancelled && barcodeData.format == 'QR_CODE') {
+              alert(barcodeData.text);
+            }
+          }, function (error) {
+            //alert(JSON.stringify(error));
+          });
+      };
+    }, false);
 
   })
 
-  .controller('settingsCtrl', ['$scope', '$state', '$stateParams', '$cordovaToast', 'User', 'Status',
-    function ($scope, $state, $stateParams, $cordovaToast, User, Status) {
+  .controller('settingsCtrl', ['$scope', '$state', '$stateParams', '$cordovaToast', '$cordovaActionSheet','$cordovaNetwork', '$cordovaBarcodeScanner', '$base64', 'User', 'Status',
+    function ($scope, $state, $stateParams, $cordovaToast, $cordovaActionSheet, $cordovaNetwork, $cordovaBarcodeScanner, base64, User, Status) {
       console.info("Controller execute: settingsCtrl");
+      $scope.currentCardNumber = null;
+
+      $scope.insertCardNumber = function () {
+        $cordovaBarcodeScanner.scan()
+          .then(function (barcodeData) {
+            if (!barcodeData.cancelled && barcodeData.format == 'QR_CODE') {
+              User.doInsertNumber(barcodeData.text).then(function (s) {
+                if (s.userNumberChanged) {
+                  var number =  base64.decode(barcodeData.text);
+                  $cordovaToast.show('Success! Your card number (' + number + ') was inserted successfully', 'long', 'bottom');
+                  $scope.currentCardNumber = number;
+                }
+              });
+            }
+          });
+      };
 
       $scope.deleteAccount = function () {
-        Status.stop();
-        User.doDelete().then(function (s) {
-          if (s.fbDelinking == true && s.userDeleted == 1) {
-            User.doLogout().then(function (s) {
-              $state.go('login').then(function () {
-                $cordovaToast.show('Your facebook delinking and your account deletion was successfully done.\n\nGood bye user :(', 'long', 'center');
+        /*Show logout confirm dialog*/
+        document.addEventListener("deviceready", function () {
+          if ($cordovaNetwork.isOnline()) {
+            var options = {
+              title: 'Danger: This action will delete permanently your account and all questions - offers you have , proceed ?',
+              buttonLabels: ['Yes', 'No']
+            };
+            $cordovaActionSheet.show(options)
+              .then(function (btnIndex) {
+                if (btnIndex == 1) {
+                  if (User.isAuthenticated()) {
+                    Status.stop();
+                    User.doDelete().then(function (s) {
+                      if (s.fbDelinking == true && s.userDeleted == 1) {
+                        User.doLogout().then(function (s) {
+                          $state.go('login').then(function () {
+                            $cordovaToast.show('Your facebook delinking and your account deletion was successfully done.\n\nGood bye user :(', 'long', 'center');
+                          });
+                        });
+                      } else {
+                        alert("Please try again later..");
+                      }
+                    }, function (f) {
+                      $cordovaToast.show('Oops something went wrong!\nPlease try again later...', 'long', 'center');
+                    })
+                  } else {
+                    $cordovaToast.show('You must login first to delete your account', 'long', 'center');
+                  }
+                }
               });
-            });
-          }else{
-            alert("Please try again later..");
           }
-        },function (f) {
-          $cordovaToast.show('Oops something went wrong!\nPlease try again later...', 'long', 'center');
-        })
+          else {
+            $cordovaToast.show('No internet connection found!', 'long', 'center');
+          }
+        }, false);
       }
     }])
 

@@ -1,6 +1,16 @@
 <ion-view view-title="Settings" name="settings-view">
   <ion-content class="padding">
-    Account delete:
-    <button ng-click="deleteAccount()">Delete</button>
+
+    <p>
+    Scan your QR-Code card to insert your food card number: </br>
+    <button class="button button-balanced" ng-click="insertCardNumber()">QR-Code Scan...</button>
+    <span ng-bind="currentCardNumber"></span>
+    </p>
+
+    <p>
+    Delete your account and deathorize your facebook account from this application: </br>
+    <button class="button button-assertive" ng-click="deleteAccount()">Delete</button>
+    </p>
+
   </ion-content>
 </ion-view>

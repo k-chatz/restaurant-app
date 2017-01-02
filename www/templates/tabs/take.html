@@ -21,7 +21,7 @@
                             'button-assertive': status.meals.b.o_number == '*****',
                             'button-energized': status.meals.b.sec_left <= 0 && !status.meals.b.o_number}"
           >
-            <strong>Breakfast!</strong>
+            <strong>Breakfast</strong>
             <div ng-if="status.meals.b.sec_left > 0">
               <sup>for today</sup>
             </div>
@@ -55,7 +55,7 @@
                             'button-assertive': status.meals.l.o_number == '*****',
                             'button-energized': status.meals.l.sec_left <= 0 && !status.meals.l.o_number}"
           >
-            <strong>Lunch!</strong>
+            <strong>Lunch</strong>
             <div ng-if="status.meals.l.sec_left > 0">
               <sup>for today</sup>
             </div>
@@ -89,7 +89,7 @@
                             'button-assertive': status.meals.d.o_number == '*****',
                             'button-energized': status.meals.d.sec_left <= 0 && !status.meals.d.o_number}"
           >
-            <strong>Dinner!</strong>
+            <strong>Dinner</strong>
             <div ng-if="status.meals.d.sec_left > 0">
               <sup>for today</sup>
             </div>
@@ -181,7 +181,7 @@
               <div class="col">
                 <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
               </div>
-                {{data.name}}
+              {{data.name}}
             </div>
           </div>
           <div class="item item-text-wrap queue_item">
@@ -192,19 +192,19 @@
 
       <!--Lunch queue-->
       <div class="col" style="padding: 0;">
+
+
         <div class="card queue_card" ng-repeat="data in status.priority.l">
-          <div class="item item-text-wrap item-divider queue_item_divider">
-            <div class="row">
-              <div class="col">
-                <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
-              </div>
-              {{data.name}}
-            </div>
+
+          <div class="row">
+            <div class="col col-50 col-offset-0 photo" style="background-image: url({{data.picture}})"></div>
+            <div class="col col-50 queue_item" ng-bind="data.name"></div>
           </div>
-          <div class="item item-text-wrap queue_item">
-            <strong>{{data.moment}}</strong>
-          </div>
+          <div class="row" ng-bind="data.moment"></div>
+
         </div>
+
+
       </div>
 
       <!--Dinner queue-->

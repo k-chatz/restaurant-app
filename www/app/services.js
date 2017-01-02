@@ -414,7 +414,7 @@ angular.module('restaurant.services', [])
             info.resolve(success.data);
             $cordovaSpinnerDialog.hide();
           }, function (fail) {
-            info.reject(fail.data);
+            info.reject(fail);
             $cordovaSpinnerDialog.hide();
           })
         }, function (f) {
@@ -481,11 +481,33 @@ angular.module('restaurant.services', [])
       });
       return info.promise;
     };
+    service.doInsertNumber = function (numberBase64) {
+      var info = $q.defer();
+      $cordovaSpinnerDialog.show(
+        "Processing..",
+        "Checking your provided number.",
+        true
+      );
+      $http({
+        method: 'POST',
+        cache: false,
+        crossDomain: true,
+        url: envService.read('apiUrl') + envService.read('userDoInsertNumberPath'),
+        headers: {'Content-Type': 'application/json'},
+        data: {newNumber: numberBase64},
+        timeout: envService.read('timeout')
+      }).then(function (s) {
+        info.resolve(s.data);
+        $cordovaSpinnerDialog.hide();
+      }, function (f) {
+        info.reject(f);
+        $cordovaSpinnerDialog.hide();
+      });
+      return info.promise;
+    }
 
     loadUserCredentials();
-
     return service;
-
   }])
 
   /*:::::User authorization:::::*/
@@ -507,7 +529,7 @@ angular.module('restaurant.services', [])
           401: AUTH_EVENTS.notAuthenticated,
           403: AUTH_EVENTS.notAuthorized,
           500: AUTH_EVENTS.internalServerError
-        }[response.status], response.data.error.type + ': ' + response.data.error.message);
+        }[response.status], response.data.error.message);
         //alert( JSON.stringify(response,null,"    ") );
         return $q.reject(response);
       }

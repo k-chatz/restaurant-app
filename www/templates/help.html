@@ -6,6 +6,10 @@
       <h3 style="color: yellow; text-align: center;">::Debugging Options::</h3>
 
       <hr style="border-color: red;">
+      <h5 style="color: yellow;">::Current token data::</h5>
+      <pre>{{dev_token_data | json}}</pre>
+
+      <hr style="border-color: red;">
       <h5 style="color: yellow;">::Login/Logout with jwt::</h5>
       <p style="color: yellow;">
         <input style="background: rgb(52, 52, 54); color: white;" type="text" ng-model="token">
@@ -66,6 +70,44 @@
       </p>
       <hr style="border-color: red;">
 
+      <h5 style="color: yellow;">::$cordovaVibration:::</h5>
+      <p>
+        <button style="border: 0px; background: #6ec52b;" ng-click="vibration()">vibration</button>
+      </p>
+      <hr style="border-color: red;">
+
+      <h5 style="color: yellow;">::$cordovaFlashlight:::</h5>
+      <p>
+        <button style="border: 0px; background: #6ec52b;" ng-click="Flashavailable()">Flashavailable</button>
+        {{flashavail}}
+        <button style="border: 0px; background: #6ec52b;" ng-click="FlashswitchOn()">FlashswitchOn</button>
+        <button style="border: 0px; background: #6ec52b;" ng-click="FlashswitchOff()">FlashswitchOff</button>
+        <button style="border: 0px; background: #6ec52b;" ng-click="Flashtoggle()">Flashtoggle</button>
+      </p>
+      <hr style="border-color: red;">
+
+      <h5 style="color: yellow;">::$cordovaBarcodeScanner:::</h5>
+      <p>
+        <button style="border: 0px; background: #6ec52b;" ng-click="scan()">scan</button>
+      </p>
+
+
+      <h5 style="color: yellow;">::$cordovaDevice:::</h5>
+      <p>
+        device {{device}}<br>
+        cordova {{cordova}}<br>
+        model {{model}}<br>
+        platform {{platform}}<br>
+        uuid {{uuid}}<br>
+        version {{version}}<br>
+      </p>
+      <hr style="border-color: red;">
+
+      <h5 style="color: yellow;">::$ionicPopup:::</h5>
+      <p>
+        <button style="border: 0px; background: #6ec52b;" ng-click="showPopup()">showPopup</button>
+      </p>
+      <hr style="border-color: red;">
 
     </div>
   </ion-content>
