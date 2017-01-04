@@ -54,8 +54,10 @@ ion-list.manual-list-fullwidth div.list > .item, .list.card.manual-card-fullwidt
   color: #444;
 }
 
+
+/*********************************************************************/
 ion-nav-view.view-container {
-  /* background: rgb(52,52,54); */
+  background: #272b30;
   /* background: url(../img/377d1b7c.png); */
   /* border-style: solid; */
   /* background-position: center; */

@@ -32,6 +32,7 @@ angular.module('restaurant', [
     $stateProvider
 
       .state('login', {
+        cache: false,
         url: '/login',
         templateUrl: 'templates/forms/login.html',
         controller: 'loginCtrl'
@@ -57,6 +58,7 @@ angular.module('restaurant', [
       })
 
       .state('tab.menu', {
+        cache: false,
         url: 'tab/menu',
         views: {
           'menu-tab': {
@@ -70,6 +72,7 @@ angular.module('restaurant', [
       })
 
       .state('tab.take', {
+        cache: false,
         url: 'tab/take',
         views: {
           'take-tab': {
@@ -83,6 +86,7 @@ angular.module('restaurant', [
       })
 
       .state('tab.give', {
+        cache: false,
         url: 'tab/give',
         views: {
           'give-tab': {
@@ -91,18 +95,19 @@ angular.module('restaurant', [
           }
         },
         data: {
-          authorizedRoles: [USER_ROLES.admin, USER_ROLES.boarder]
+          authorizedRoles: [USER_ROLES.boarder]
         }
       })
 
       .state('settings', {
+        cache: false,
         url: '/settings',
         templateUrl: 'templates/settings.html',
         controller: 'settingsCtrl',
         data: {
           authorizedRoles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
         }
-      })
+      });
 
     $urlRouterProvider.otherwise('/login');
   })
@@ -114,7 +119,17 @@ angular.module('restaurant', [
         if (!User.isAuthorized(authorizedRoles)) {
           event.preventDefault();
           $state.go($state.current, {}, {reload: true});
-          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, "Login first!");
+
+          if(User.isAuthenticated()){
+            switch (next.name){
+              case 'tab.give':
+                $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, "Scan your number in settings to access this resource.");
+                break;
+            }
+          }
+          else {
+            $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, "To access this resource, you must login first!");
+          }
         }
       }
 
@@ -147,6 +162,7 @@ angular.module('restaurant', [
       vars: {
         development: {
           apiUrl: 'http://192.168.1.3/ionic/Restaurant-API',
+          userGetPath: '/user',
           userDoConnectPath: '/user/do/connect',
           userDoDelinkPath: '/user/do/delink',
           userDoInsertNumberPath: '/user/do/insert/number',
@@ -165,6 +181,7 @@ angular.module('restaurant', [
         },
         production: {
           apiUrl: 'http://83.212.118.209/Restaurant-API',
+          userGetPath: '/user',
           userDoConnectPath: '/user/do/connect',
           userDoDelinkPath: '/user/do/delink',
           userDoInsertNumberPath: '/user/do/insert/number',

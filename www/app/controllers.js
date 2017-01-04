@@ -11,7 +11,7 @@ angular.module('restaurant.controllers', [])
     });
 
     $scope.$on(AUTH_EVENTS.notAuthorized, function (event, message) {
-      $cordovaToast.show('Unauthorized!\n' + message, 'long', 'center');
+      $cordovaToast.show('Forbidden!\n' + message, 'long', 'center');
     });
 
     $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, message) {
@@ -30,6 +30,7 @@ angular.module('restaurant.controllers', [])
     $rootScope.$on('$cordovaNetwork:offline', function (event, networkState) {
       $cordovaToast.show('The Internet connection is lost!', 'long', 'center');
     });
+
 
     /*TODO: USER SERVICE->GET_ROLE() Add watchers to disable/enable this tabs*/
     $scope.menuTabActive = true;
@@ -52,9 +53,8 @@ angular.module('restaurant.controllers', [])
               $cordovaToast.show('Your registration was completed successfully!\n\nWelcome :)', 'long', 'center');
             }
           });
-        }, function (data) {
-          /*TODO: error in toast message*/
-          $cordovaToast.show('Oops something went wrong!\nPlease try again later...', 'long', 'center');
+        }, function (error) {
+          $cordovaToast.show('Oops something went wrong!\n'+ error.errorMessage +'\n\nPlease try again later...', 'long', 'center');
         })
       }
       else {
@@ -279,8 +279,8 @@ angular.module('restaurant.controllers', [])
     }])
 
 
-  .controller('giveTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$cordovaBarcodeScanner', '$cordovaToast', '$interval', '$stateParams', 'User', 'Status', 'Give',
-    function ($rootScope, $scope, $ionicTabsDelegate, $cordovaBarcodeScanner, $cordovaToast, $interval, $stateParams, User, Status, Give) {
+  .controller('giveTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$cordovaToast', '$interval', '$stateParams', 'User', 'Status', 'Give',
+    function ($rootScope, $scope, $ionicTabsDelegate, $cordovaToast, $interval, $stateParams, User, Status, Give) {
       console.info("Controller execute: giveTabCtrl");
 
       $scope.goForward = function () {
@@ -352,44 +352,18 @@ angular.module('restaurant.controllers', [])
       }
 
       $scope.$on('$ionicView.enter', function (e) {
-
-
-        if (User.role() == 'V') {
-
-          $cordovaBarcodeScanner.scan()
-            .then(function (barcodeData) {
-              if (!barcodeData.cancelled && barcodeData.format == 'QR_CODE') {
-
-                /*TODO: Sent QR_CODE data to server, then server has to validate that data and response..*/
-
-                if (true) {
-                  alert(barcodeData.text);
-                  watcher = $scope.$watch(function () {
-                    return Status.data;
-                  }, function (data) {
-                    if (data.time != null && data.success != false) {
-                      $scope.status = data;
-                      $scope.offersByDate = $scope.status.offersByDate;
-                      progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
-                    }
-                  }, true);
-                } else {
-                  $state.go('tab.menu').then(function () {
-                    if (User.isNew()) {
-                      $cordovaToast.show('Error', 'long', 'center');
-                    }
-                  });
-                }
-
-
-              }
-            }, function (error) {
-              //alert(JSON.stringify(error));
-            });
-        }
-
-
+        watcher = $scope.$watch(function () {
+          return Status.data;
+        }, function (data) {
+          if (data.time != null && data.success != false) {
+            $scope.status = data;
+            $scope.offersByDate = $scope.status.offersByDate;
+            progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
+          }
+        }, true);
       });
+
+
       $scope.$on('$ionicView.leave', function (e) {
         console.info('$ionicView.leave');
         watcher();
@@ -905,20 +879,25 @@ angular.module('restaurant.controllers', [])
 
   })
 
-  .controller('settingsCtrl', ['$scope', '$state', '$stateParams', '$cordovaToast', '$cordovaActionSheet','$cordovaNetwork', '$cordovaBarcodeScanner', '$base64', 'User', 'Status',
+  .controller('settingsCtrl', ['$scope', '$state', '$stateParams', '$cordovaToast', '$cordovaActionSheet', '$cordovaNetwork', '$cordovaBarcodeScanner', 'base64', 'User', 'Status',
     function ($scope, $state, $stateParams, $cordovaToast, $cordovaActionSheet, $cordovaNetwork, $cordovaBarcodeScanner, base64, User, Status) {
       console.info("Controller execute: settingsCtrl");
-      $scope.currentCardNumber = null;
+
+      $scope.$on('$ionicView.enter', function (e) {
+        $scope.cardNumber = User.number();
+      });
 
       $scope.insertCardNumber = function () {
         $cordovaBarcodeScanner.scan()
           .then(function (barcodeData) {
             if (!barcodeData.cancelled && barcodeData.format == 'QR_CODE') {
-              User.doInsertNumber(barcodeData.text).then(function (s) {
-                if (s.userNumberChanged) {
-                  var number =  base64.decode(barcodeData.text);
+              User.doInsertNumber(barcodeData.text).then(function (number) {
+                if (number !== null) {
                   $cordovaToast.show('Success! Your card number (' + number + ') was inserted successfully', 'long', 'bottom');
-                  $scope.currentCardNumber = number;
+                  $scope.cardNumber = User.number();
+                }
+                else{
+                  $cordovaToast.show('Fail!', 'long', 'bottom');
                 }
               });
             }

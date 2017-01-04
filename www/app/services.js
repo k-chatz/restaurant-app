@@ -347,49 +347,51 @@ angular.module('restaurant.services', [])
   .service('User', ['envService', '$cordovaSpinnerDialog', '$cordovaToast', '$q', '$http', 'Facebook', 'USER_ROLES', function (envService, $cordovaSpinnerDialog, $cordovaToast, $q, $http, Facebook, USER_ROLES) {
 
     var LOCAL_TOKEN_KEY = null;
-    var isNew = false;
-    var role = '';
     var authToken;
-    var service = {};
-    service.online = false;
 
-    function loadUserCredentials() {
-      var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-      if (token) {
-        useCredentials(token);
-      }
-    }
-
-    function storeUserCredentials(token) {
-      window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-      useCredentials(token);
-    }
-
-    function useCredentials(token) {
-      service.online = true;
-      authToken = token;
-
-      /*TODO: Get userRole from token data*/
-      role = USER_ROLES.admin;
-
-      $http.defaults.headers.common['authorization'] = 'Bearer ' + token;
-      $http.defaults.headers.common['Content-Type'] = 'application/json';
-    }
-
-    function destroyUserCredentials() {
-      authToken = undefined;
-      service.online = false;
-      $http.defaults.headers.common['X-Auth-Token'] = undefined;
-      window.localStorage.removeItem(LOCAL_TOKEN_KEY);
-      delete $http.defaults.headers.common.authorization;
-    }
-
-    var isAuthorized = function (authorizedRoles) {
-      if (!angular.isArray(authorizedRoles)) {
-        authorizedRoles = [authorizedRoles];
-      }
-      return (service.online && authorizedRoles.indexOf(role) !== -1);
+    var service = {
+      user: {},
+      online: false,
+      get: get,
+      doLogin: doLogin,
+      doLogout: doLogout,
+      isAuthorized: isAuthorized,
+      isAuthenticated: function () {
+        return service.online;
+      },
+      role: function () {
+        return this.user.role;
+      },
+      number: function () {
+        return service.user.number;
+      },
+      isNew: function () {
+        return this.user.isNew;
+      },
+      debugLogin: function (token) {
+        storeUserCredentials(token);
+      },
+      debugLogout: destroyUserCredentials,
+      doDelete: doDelete,
+      doInsertNumber: doInsertNumber
     };
+
+    function get() {
+      var info = $q.defer();
+      $http({
+        method: 'GET',
+        cache: false,
+        crossDomain: true,
+        url: envService.read('apiUrl') + envService.read('userGetPath'),
+        headers: {'Content-Type': 'application/json'},
+        timeout: envService.read('timeout')
+      }).then(function (s) {
+        info.resolve(s.data.user);
+      }, function (f) {
+        info.reject(f);
+      });
+      return info.promise;
+    }
 
     function doLogin() {
       var info = $q.defer();
@@ -409,9 +411,9 @@ angular.module('restaurant.services', [])
             data: {fbAccessToken: s.authResponse.accessToken},
             timeout: 30000
           }).then(function (success) {
-            isNew = success.data.userIsNew;
+            service.user = success.data.user;
             storeUserCredentials(success.data.jwt);
-            info.resolve(success.data);
+            info.resolve(service.user);
             $cordovaSpinnerDialog.hide();
           }, function (fail) {
             info.reject(fail);
@@ -440,25 +442,7 @@ angular.module('restaurant.services', [])
       return info.promise;
     }
 
-    service.doLogin = doLogin;
-    service.doLogout = doLogout;
-    service.isAuthorized = isAuthorized;
-    service.isAuthenticated = function () {
-      return service.online;
-    };
-    service.role = function () {
-      return role;
-    };
-    service.isNew = function () {
-      return isNew;
-    }
-    service.debugLogin = function (token) {
-      storeUserCredentials(token);
-    };
-    service.debugLogout = function () {
-      destroyUserCredentials();
-    };
-    service.doDelete = function () {
+    function doDelete() {
       var info = $q.defer();
       $cordovaSpinnerDialog.show(
         "Delinking..",
@@ -473,6 +457,7 @@ angular.module('restaurant.services', [])
         headers: {'Content-Type': 'application/json'},
         timeout: 30000
       }).then(function (s) {
+        service.user = {};
         info.resolve(s.data);
         $cordovaSpinnerDialog.hide();
       }, function (f) {
@@ -480,8 +465,9 @@ angular.module('restaurant.services', [])
         $cordovaSpinnerDialog.hide();
       });
       return info.promise;
-    };
-    service.doInsertNumber = function (numberBase64) {
+    }
+
+    function doInsertNumber(numberBase64) {
       var info = $q.defer();
       $cordovaSpinnerDialog.show(
         "Processing..",
@@ -497,13 +483,65 @@ angular.module('restaurant.services', [])
         data: {newNumber: numberBase64},
         timeout: envService.read('timeout')
       }).then(function (s) {
-        info.resolve(s.data);
+        if(s.data.user.number != null && s.data.user.number != undefined) {
+          service.user.number = s.data.user.number;
+          service.user.role = s.data.user.role;
+        }
+        info.resolve(s.data.user.number);
         $cordovaSpinnerDialog.hide();
       }, function (f) {
         info.reject(f);
         $cordovaSpinnerDialog.hide();
       });
       return info.promise;
+    }
+
+    function storeUserCredentials(token) {
+      window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+      useCredentials(token);
+    }
+
+    function useCredentials(token) {
+      service.online = true;
+      authToken = token;
+      $http.defaults.headers.common['authorization'] = 'Bearer ' + token;
+      $http.defaults.headers.common['Content-Type'] = 'application/json';
+    }
+
+    function loadUserCredentials() {
+      service.user = {
+        "isNew": null,
+        "username": null,
+        "name": null,
+        "number": null,
+        "role": 'V',
+        "picture": null,
+        "gender": null,
+        "fbLongAccessToken": null
+      };
+      var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+      if (token) {
+        useCredentials(token);
+        get().then(function (user) {
+          service.user = user;
+        });
+      }
+    }
+
+    function destroyUserCredentials() {
+      service.user = {};
+      authToken = undefined;
+      service.online = false;
+      $http.defaults.headers.common['X-Auth-Token'] = undefined;
+      window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+      delete $http.defaults.headers.common.authorization;
+    }
+
+    function isAuthorized(authorizedRoles) {
+      if (!angular.isArray(authorizedRoles)) {
+        authorizedRoles = [authorizedRoles];
+      }
+      return (service.online && authorizedRoles.indexOf(service.user.role) !== -1);
     }
 
     loadUserCredentials();
