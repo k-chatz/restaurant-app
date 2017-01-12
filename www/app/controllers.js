@@ -177,9 +177,8 @@ angular.module('restaurant.controllers', [])
     };
   })
 
-
-  .controller('takeTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$interval', '$stateParams', 'Status', 'Take',
-    function ($rootScope, $scope, $ionicTabsDelegate, $interval, $stateParams, Status, Take) {
+  .controller('takeTabCtrl', ['$rootScope', '$scope', '$state', '$ionicTabsDelegate', '$stateParams', 'Status', 'Take',
+    function ($rootScope, $scope, $state, $ionicTabsDelegate, $stateParams, Status, Take) {
       console.info("Controller execute: takeTabCtrl");
 
       $scope.goForward = function () {
@@ -198,10 +197,12 @@ angular.module('restaurant.controllers', [])
 
 
       var watcher = null;
+
       $scope.status = {
         time: null,
         meals: {
           b: {
+            progress: null,
             o_number: null,
             sec_left: null,
             q_question: null,
@@ -211,6 +212,7 @@ angular.module('restaurant.controllers', [])
             offers: null
           },
           l: {
+            progress: null,
             o_number: null,
             sec_left: null,
             q_question: null,
@@ -220,6 +222,7 @@ angular.module('restaurant.controllers', [])
             offers: null
           },
           d: {
+            progress: null,
             o_number: null,
             sec_left: null,
             q_question: null,
@@ -235,18 +238,6 @@ angular.module('restaurant.controllers', [])
           d: []
         }
       };
-      function progress(B, L, D) {
-        var day_duration = 86400;
-        var b_duration = 5400;
-        var l_duration = 9000;
-        var d_duration = 6301;
-        var b = ((b_duration - (B <= 0 ? B + day_duration : B) ) / b_duration) * 100;
-        var l = ((l_duration - (L <= 0 ? L + day_duration : L) ) / l_duration) * 100;
-        var d = ((d_duration - (D <= 0 ? D + day_duration : D) ) / d_duration) * 100;
-        $scope.status.meals.b.progress = b < 0 ? 0 : b;
-        $scope.status.meals.l.progress = l < 0 ? 0 : l;
-        $scope.status.meals.d.progress = d < 0 ? 0 : d;
-      }
 
       $scope.$on('$ionicView.enter', function (e) {
         Status.view('take');
@@ -255,39 +246,44 @@ angular.module('restaurant.controllers', [])
         }, function (data) {
           if (data.time != null && data.success != false) {
             $scope.status = data;
-            progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
           }
         }, true);
       });
+
       $scope.$on('$ionicView.leave', function (e) {
         console.info('$ionicView.leave');
         watcher();
       });
+
       $scope.$on('$ionicView.loaded', function (e) {
         console.info('$ionicView.loaded');
       });
+
       $scope.question = function (meal) {
         Take.question(meal).then(function (response) {
           Status.refresh();
         });
       };
+
       $scope.cancel = function (meal) {
         Take.cancel(meal).then(function (response) {
           Status.refresh();
         });
       };
+
       $scope.confirm = function (meal) {
         Take.confirm(meal).then(function (response) {
           Status.refresh();
         });
       };
+
       $scope.reject = function (meal) {
         Take.reject(meal).then(function (response) {
           Status.refresh();
         });
       };
-    }])
 
+    }])
 
   .controller('giveTabCtrl', ['$rootScope', '$scope', '$ionicTabsDelegate', '$cordovaToast', '$interval', '$stateParams', 'User', 'Status', 'Give',
     function ($rootScope, $scope, $ionicTabsDelegate, $cordovaToast, $interval, $stateParams, User, Status, Give) {
@@ -307,12 +303,13 @@ angular.module('restaurant.controllers', [])
         }
       };
 
-
       var watcher = null;
+
       $scope.status = {
         time: null,
         meals: {
           b: {
+            progress: null,
             o_number: null,
             sec_left: null,
             q_question: null,
@@ -322,6 +319,7 @@ angular.module('restaurant.controllers', [])
             offers: null
           },
           l: {
+            progress: null,
             o_number: null,
             sec_left: null,
             q_question: null,
@@ -331,6 +329,7 @@ angular.module('restaurant.controllers', [])
             offers: null
           },
           d: {
+            progress: null,
             o_number: null,
             sec_left: null,
             q_question: null,
@@ -340,26 +339,9 @@ angular.module('restaurant.controllers', [])
             offers: null
           }
         },
-        priority: {
-          b: [],
-          l: [],
-          d: []
-        },
         offersByDate: []
       };
       /*Give buttons*/
-      function progress(B, L, D) {
-        var day_duration = 86400;
-        var b_duration = 5400;
-        var l_duration = 9000;
-        var d_duration = 6301;
-        var b = ((b_duration - (B <= 0 ? B + day_duration : B) ) / b_duration) * 100;
-        var l = ((l_duration - (L <= 0 ? L + day_duration : L) ) / l_duration) * 100;
-        var d = ((d_duration - (D <= 0 ? D + day_duration : D) ) / d_duration) * 100;
-        $scope.status.meals.b.progress = b < 0 ? 0 : b;
-        $scope.status.meals.l.progress = l < 0 ? 0 : l;
-        $scope.status.meals.d.progress = d < 0 ? 0 : d;
-      }
 
       $scope.$on('$ionicView.enter', function (e) {
         Status.view('give');
@@ -369,7 +351,6 @@ angular.module('restaurant.controllers', [])
           if (data.time != null && data.success != false) {
             $scope.status = data;
             $scope.offersByDate = $scope.status.offersByDate;
-            progress($scope.status.meals.b.sec_left, $scope.status.meals.l.sec_left, $scope.status.meals.d.sec_left);
           }
         }, true);
       });
@@ -513,380 +494,8 @@ angular.module('restaurant.controllers', [])
 
   /*Other*/
 
-  .controller('helpCtrl', function (envService, $http, $rootScope, $ionicPopup, $scope, $cordovaBarcodeScanner, $cordovaDevice, $cordovaFlashlight, $cordovaVibration, $stateParams, Status, User, $cordovaDialogs, $ionicPlatform, $cordovaLocalNotification, $cordovaNetwork, $cordovaToast) {
+  .controller('helpCtrl', function ($scope, $stateParams) {
     console.info("Controller execute: helpCtrl");
-
-    $scope.$on('$ionicView.enter', function (e) {
-      $scope.dev_token_data = null;
-      $http({
-        method: 'GET',
-        cache: false,
-        crossDomain: true,
-        url: envService.read('apiUrl') + '/user/token/data',
-        headers: {'Content-Type': 'application/json'},
-        timeout: envService.read('timeout')
-      }).then(function (success) {
-        $scope.dev_token_data = success.data;
-      }, function (fail) {
-        $scope.dev_token_data = fail.data;
-      });
-    });
-
-    $scope.showPopup = function () {
-      $scope.data = {};
-
-      // An elaborate, custom popup
-      var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="data.number"><input type="password" ng-model="data.number">',
-        title: 'Enter your food card number',
-        subTitle: 'Please use normal things',
-        scope: $scope,
-        buttons: [
-          {text: 'Cancel'},
-          {
-            text: '<b>Save</b>',
-            type: 'button-positive',
-            onTap: function (e) {
-              if (!$scope.data.number) {
-                //don't allow the user to close unless he enters a text
-                e.preventDefault();
-              } else {
-                return $scope.data.number;
-              }
-            }
-          }
-        ]
-      });
-
-      myPopup.then(function (res) {
-        alert(res);
-      });
-
-
-    };
-
-
-    $scope.debugLogin = function (token) {
-      console.info("Login!");
-      User.debugLogin(token);
-    };
-
-    $scope.debugLogout = function (token) {
-      console.info("Logout!");
-      User.debugLogout();
-    };
-
-    $scope.start = function () {
-      console.info("Start Timer");
-      Status.start(5000);
-    };
-
-    $scope.stop = function () {
-      console.info("Stop Timer");
-      Status.stop();
-    };
-
-    $scope.beep = function () {
-      $cordovaDialogs.beep(3);
-    };
-
-    $scope.confirm = function () {
-      $cordovaDialogs.confirm('message', 'title', ['button 1', 'button 2'])
-        .then(function (buttonIndex) {
-          alert(buttonIndex);
-        });
-    };
-
-    $scope.prompt = function () {
-      $cordovaDialogs.prompt('Enter your card number', 'Card Number', ['btn 1', 'btn 2'], 'default text')
-        .then(function (result) {
-          var input = result.input1;
-          // no button = 0, 'OK' = 1, 'Cancel' = 2
-          var btnIndex = result.buttonIndex;
-        });
-    }
-
-    $ionicPlatform.ready(function () {
-
-      // ========== Scheduling
-
-      $scope.scheduleSingleNotification = function () {
-        $cordovaLocalNotification.schedule({
-          id: 1,
-          title: 'Restaurant',
-          text: 'Number found!',
-          data: {
-            customProperty: 'custom value'
-          }
-        }).then(function (result) {
-          //alert(result);
-        });
-      };
-
-      $scope.scheduleMultipleNotifications = function () {
-        $cordovaLocalNotification.schedule([
-          {
-            id: 1,
-            title: 'Title 1 here',
-            text: 'Text 1 here',
-            data: {
-              customProperty: 'custom 1 value'
-            }
-          },
-          {
-            id: 2,
-            title: 'Title 2 here',
-            text: 'Text 2 here',
-            data: {
-              customProperty: 'custom 2 value'
-            }
-          },
-          {
-            id: 3,
-            title: 'Title 3 here',
-            text: 'Text 3 here',
-            data: {
-              customProperty: 'custom 3 value'
-            }
-          }
-        ]).then(function (result) {
-          // ...
-        });
-      };
-
-      $scope.scheduleDelayedNotification = function () {
-        var now = new Date().getTime();
-        var _10SecondsFromNow = new Date(now + 10 * 1000);
-
-        $cordovaLocalNotification.schedule({
-          id: 1,
-          title: 'Title here',
-          text: 'Text here',
-          at: _10SecondsFromNow
-        }).then(function (result) {
-          // ...
-        });
-      };
-
-      $scope.scheduleEveryMinuteNotification = function () {
-        $cordovaLocalNotification.schedule({
-          id: 1,
-          title: 'Title here',
-          text: 'Text here',
-          every: 'minute'
-        }).then(function (result) {
-          // ...
-        });
-      };
-
-      // =========/ Scheduling
-
-      // ========== Update
-
-      $scope.updateSingleNotification = function () {
-        $cordovaLocalNotification.update({
-          id: 1,
-          title: 'Title - UPDATED',
-          text: 'Text - UPDATED'
-        }).then(function (result) {
-          // ...
-        });
-      };
-
-      $scope.updateMultipleNotifications = function () {
-        $cordovaLocalNotification.update([
-          {
-            id: 1,
-            title: 'Title 1 - UPDATED',
-            text: 'Text 1 - UPDATED'
-          },
-          {
-            id: 2,
-            title: 'Title 2 - UPDATED',
-            text: 'Text 2 - UPDATED'
-          },
-          {
-            id: 3,
-            title: 'Title 3 - UPDATED',
-            text: 'Text 3 - UPDATED'
-          }
-        ]).then(function (result) {
-          // ...
-        });
-      };
-
-      // =========/ Update
-
-      // ========== Cancelation
-
-      $scope.cancelSingleNotification = function () {
-        $cordovaLocalNotification.cancel(1).then(function (result) {
-          // ...
-        });
-      };
-
-      $scope.cancelMultipleNotifications = function () {
-        $cordovaLocalNotification.cancel([1, 2]).then(function (result) {
-          // ...
-        });
-      };
-
-      $scope.cancelAllNotifications = function () {
-        $cordovaLocalNotification.cancelAll().then(function (result) {
-          // ...
-        });
-      };
-
-      // =========/ Cancelation
-
-      // ========== Events
-
-      $rootScope.$on('$cordovaLocalNotification:schedule',
-        function (event, notification, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:trigger',
-        function (event, notification, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:update',
-        function (event, notification, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:clear',
-        function (event, notification, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:clearall',
-        function (event, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:cancel',
-        function (event, notification, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:cancelall',
-        function (event, state) {
-          // ...
-        });
-
-      $rootScope.$on('$cordovaLocalNotification:click',
-        function (event, notification, state) {
-          // ...
-        });
-
-      // =========/ Events
-
-    });
-
-    $scope.nettype = function () {
-      $scope.net_type = $cordovaNetwork.getNetwork();
-    };
-
-    $scope.netisOnline = function () {
-      $scope.net_isOnline = $cordovaNetwork.isOnline();
-    };
-
-    $scope.netisOffline = function () {
-      $scope.net_isOffline = $cordovaNetwork.isOffline();
-    };
-
-    $scope.toast = function () {
-      $cordovaToast
-        .show('Here is a message', 'long', 'center')
-        .then(function (success) {
-          // success
-        }, function (error) {
-          // error
-        });
-    }
-
-    $scope.toast_showShortTop = function () {
-      $cordovaToast.showShortTop('Here is a message').then(function (success) {
-        // success
-      }, function (error) {
-        // error
-      });
-    }
-
-    $scope.toast_showLongBottom = function () {
-      $cordovaToast.showLongBottom('Here is a message').then(function (success) {
-        // success
-      }, function (error) {
-        // error
-      });
-    }
-
-    $scope.vibration = function () {
-      $cordovaVibration.vibrate(5000);
-    }
-
-    $scope.Flashavailable = function () {
-      $cordovaFlashlight.available().then(function (availability) {
-        $scope.flashavail = availability; // is available
-      }, function () {
-        $scope.flashavail = null;
-      });
-    }
-
-    $scope.FlashswitchOn = function () {
-      $cordovaFlashlight.switchOn().then(
-        function (success) { /* success */
-        },
-        function (error) { /* error */
-        });
-    }
-
-    $scope.FlashswitchOff = function () {
-      $cordovaFlashlight.switchOff()
-        .then(
-          function (success) { /* success */
-          },
-          function (error) { /* error */
-          });
-    }
-
-    $scope.Flashtoggle = function () {
-      $cordovaFlashlight.toggle()
-        .then(function (success) { /* success */
-          },
-          function (error) { /* error */
-          });
-    }
-
-
-    document.addEventListener("deviceready", function () {
-
-      $scope.device = $cordovaDevice.getDevice();
-
-      $scope.cordova = $cordovaDevice.getCordova();
-
-      $scope.model = $cordovaDevice.getModel();
-
-      $scope.platform = $cordovaDevice.getPlatform();
-
-      $scope.uuid = $cordovaDevice.getUUID();
-
-      $scope.version = $cordovaDevice.getVersion();
-
-
-      $scope.scan = function () {
-        $cordovaBarcodeScanner.scan()
-          .then(function (barcodeData) {
-            if (!barcodeData.cancelled && barcodeData.format == 'QR_CODE') {
-              alert(barcodeData.text);
-            }
-          }, function (error) {
-            //alert(JSON.stringify(error));
-          });
-      };
-    }, false);
 
   })
 
@@ -907,8 +516,8 @@ angular.module('restaurant.controllers', [])
                   $cordovaToast.show('Success! Your card number (' + number + ') was inserted successfully', 'long', 'bottom');
                   $scope.cardNumber = User.number();
                 }
-                else{
-                  $cordovaToast.show('Fail!', 'long', 'bottom');
+                else {
+                  $cordovaToast.show('Fail!', 'long', 'center');
                 }
               });
             }
@@ -957,5 +566,6 @@ angular.module('restaurant.controllers', [])
   .controller('aboutCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {
       console.info("Controller execute: aboutCtrl");
+
 
     }]);
