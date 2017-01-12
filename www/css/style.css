@@ -57,7 +57,7 @@ ion-list.manual-list-fullwidth div.list > .item, .list.card.manual-card-fullwidt
 
 /*********************************************************************/
 ion-nav-view.view-container {
-  background: #272b30;
+  background: #272b30 !important;
   /* background: url(../img/377d1b7c.png); */
   /* border-style: solid; */
   /* background-position: center; */
@@ -99,7 +99,7 @@ ion-view.pane {
   /* background: url(../img/6b281f62.png); */
 }
 
-.menu_bar_item {/* border-color: #444444; */background-color: #32383e;color: #ffffff !important;border-width: 0px;margin: 1px 1px 1px 0px;}
+.menu_bar_item {/* border-color: #444444; */background-color: rgb(50, 56, 62);color: #ffffff !important;border-width: 0px;margin: 1px 1px 1px 0px;}
 
 
 
@@ -134,26 +134,38 @@ ion-view.pane {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#343436', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
 }
 
-.menu-col-75 {
-  margin: 3px;
-  padding: 1px;
+.menu_col-50 {
+  margin: 1px;
+  padding: 6px;
+  /* background: rgba(0, 0, 0, 0.09); */
+  /* box-shadow: inset 0px 0px 3px 5px rgb(28, 31, 34); */
 }
 
-.menu-card {
-  background: rgba(29, 31, 32, 0.6);
+.menu_card {
+  transition: 2s;
+  background: rgb(50, 56, 62);
   /* width: 95%; */
   margin: 10px 0px;
   padding: 1px;
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.57);
 }
 
-.menu-content {
-  background: rgba(0, 0, 0, 0.6);
-  color: whitesmoke;
-  margin-top: 0px !important;
+.menu_content {
+  /* background: rgb(39, 43, 48); */
+  color: #2196F3;
+  margin-top: 5px !important;
+  /* padding: 3px; */
+  margin-left: -3px;
+  /* margin-top: 8px; */
 }
 
-menu-header{
-
+.menu_header {
+  /* background: #000000; */
+  /* padding: 3px; */
+  /* box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.05); */
+  color: #8BC34A;
+  text-shadow: 0px 0px 1px #FF9800;
+  margin: -3px;
 }
 
 #take_logo {
@@ -291,23 +303,29 @@ md-progress-linear.md-default-theme .md-container, md-progress-linear .md-contai
 .queue_card {
   overflow: hidden;
   margin: 4px 2px 0px 2px;
-  border-radius: 2px;
-  background-color: rgb(29, 31, 32);
+  /* border-radius: 2px; */
+  /* background-color: rgb(29, 31, 32); */
   /* padding-top: 1px; */
   /* padding-bottom: 1px; */
   /* border: 1px solid #313131; */
-  border: 1px solid #000000;
-  box-shadow: 0px 0px 1px 0px rgba(255, 255, 255, 0.3);
-  color: white;
+  /* border: 1px solid #000000; */
+  /* box-shadow: 0px 0px 1px 0px rgba(255, 255, 255, 0.3); */
+  /* color: white; */
+  background: rgb(50, 56, 62);
+  /* width: 95%; */
+  /* margin: 10px 0px; */
+  /* padding: 1px; */
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.57);
 }
 
 .queue_item_divider {
   padding: 0px;
   min-height: 20px;
   font-size: 9px;
-  background-color: rgb(29, 31, 32);
-  color: #cecece;
+  background-color: rgb(58, 63, 68);
+  color: #f2f2f2;
   border: 0px solid rgba(0, 0, 0, 0.04);
+  text-shadow: 0px 0px 1px black;
 }
 
 .queue_item {
@@ -551,8 +569,35 @@ div.photo {
 }
 
 .welcome-text{
-  color: #000000;
+  color: #9E9E9E;
   /* text-shadow: 0px 0px 2px rgb(255, 255, 255); */
   /* font-size: medium; */
-  /* font-family: cursive; */
+  font-family: cursive;
+}
+
+.settings_list_card{
+  background: rgba(0, 0, 0, 0);
+}
+
+.settings_item{
+  background: rgb(50, 56, 62);
+  border: 1px solid rgb(39, 43, 48) !important;
+  color: #ffffff !important;
+  /* margin: 4px; */
+  /* box-shadow: inset 0px 0px 2px 0px black; */
+  /* border-top-left-radius: 0.3em !important; */
+  /* border-top-right-radius: 0.3em !important; */
+  /* border-bottom-left-radius: 0.3em !important; */
+  /* border-bottom-right-radius: 0.3em !important; */
+}
+
+.hr_menu{
+  margin: -3px;
+  /* border: 1px solid rgb(205, 220, 57); */
+  border: 0;
+  height: 2px;
+  background-image: -webkit-linear-gradient(left, #CDDC39, #009688, rgba(0, 0, 0, 0));
+  background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
 }

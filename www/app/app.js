@@ -102,13 +102,44 @@ angular.module('restaurant', [
       .state('settings', {
         cache: false,
         url: '/settings',
-        templateUrl: 'templates/settings.html',
+        templateUrl: 'templates/settings/settings.html',
         controller: 'settingsCtrl',
         data: {
-          authorizedRoles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+          roles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
         }
-      });
+      })
 
+      .state('scan', {
+        cache: false,
+        url: '/scan',
+        templateUrl: 'templates/settings/scan.html',
+        controller: 'settingsCtrl',
+        data: {
+          roles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+        }
+      })
+
+      .state('account', {
+        cache: false,
+        url: '/account',
+        templateUrl: 'templates/settings/account.html',
+        controller: 'settingsCtrl',
+        data: {
+          roles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+        }
+      })
+
+      .state('notifications', {
+        cache: false,
+        url: '/notifications',
+        templateUrl: 'templates/settings/notifications.html',
+        controller: 'settingsCtrl',
+        data: {
+          roles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+        }
+      })
+
+    ;
     $urlRouterProvider.otherwise('/login');
   })
 

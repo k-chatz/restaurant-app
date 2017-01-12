@@ -1,0 +1,15 @@
+<ion-view view-title="Settings -> Card #" name="scan-view">
+  <ion-content class="padding">
+
+    <div class="card">
+      <div class="item item-divider">
+        Card #: <strong style="color:blue;" ng-bind="cardNumber"></strong>
+      </div>
+      <div class="item item-text-wrap">
+        <p>Scan your QR-Code card to insert your food card number:</p>
+        <button class="button button-balanced" ng-click="insertCardNumber()">Scan...</button>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
