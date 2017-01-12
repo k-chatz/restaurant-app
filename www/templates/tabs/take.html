@@ -178,8 +178,8 @@
         <div class="card queue_card" ng-repeat="data in status.priority.b">
           <div class="item item-text-wrap item-divider queue_item_divider">
             <div class="row">
-              <div class="col">
-                <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
+              <div style="padding: 1px;" class="col">
+                <img src="{{data.picture}}" alt="Avatar" width="32" height="32">
               </div>
               {{data.name}}
             </div>
@@ -192,19 +192,19 @@
 
       <!--Lunch queue-->
       <div class="col" style="padding: 0;">
-
-
         <div class="card queue_card" ng-repeat="data in status.priority.l">
-
-          <div class="row">
-            <div class="col col-50 col-offset-0 photo" style="background-image: url({{data.picture}})"></div>
-            <div class="col col-50 queue_item" ng-bind="data.name"></div>
+          <div class="item item-text-wrap item-divider queue_item_divider">
+            <div class="row">
+              <div style="padding: 1px;" class="col">
+                <img src="{{data.picture}}" alt="Avatar" width="32" height="32">
+              </div>
+              {{data.name}}
+            </div>
           </div>
-          <div class="row" ng-bind="data.moment"></div>
-
+          <div class="item item-text-wrap queue_item">
+            <strong>{{data.moment}}</strong>
+          </div>
         </div>
-
-
       </div>
 
       <!--Dinner queue-->
@@ -212,8 +212,8 @@
         <div class="card queue_card" ng-repeat="data in status.priority.d">
           <div class="item item-text-wrap item-divider queue_item_divider">
             <div class="row">
-              <div class="col">
-                <img style="border-radius: 12px;" src="{{data.picture}}" alt="Avatar" width="25" height="25">
+              <div style="padding: 1px;" class="col">
+                <img src="{{data.picture}}" alt="Avatar" width="32" height="32">
               </div>
               {{data.name}}
             </div>
