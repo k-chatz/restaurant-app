@@ -122,54 +122,28 @@ angular.module('restaurant.services', [])
   }])
 
   .service('Menu', ['envService', '$http', function (envService, $http) {
-    var service = {};
-    service.breakfast = breakfast;
-    service.lunch = lunch;
-    service.dinner = dinner;
+    var service = {
+      get: get
+    };
     return service;
 
-    function breakfast() {
-      return $http({
+    function get(meal) {
+      var info = $q.defer();
+      $http({
         method: 'POST',
         cache: false,
         crossDomain: true,
         url: envService.read('apiUrl') + envService.read('menuPath'),
-        data: {meal: 'b'},
+        data: {meal: meal},
         timeout: envService.read('timeout')
-      }).then(handleSuccess, handleError('Error'));
+      }).then(function (s) {
+        info.resolve(s.data.menu.meal);
+      }, function (f) {
+        info.reject(f);
+      });
+      return info.promise;
     }
 
-    function lunch() {
-      return $http({
-        method: 'POST',
-        cache: false,
-        crossDomain: true,
-        url: envService.read('apiUrl') + envService.read('menuPath'),
-        data: {meal: 'l'},
-        timeout: envService.read('timeout')
-      }).then(handleSuccess, handleError('Error'));
-    }
-
-    function dinner() {
-      return $http({
-        method: 'POST',
-        cache: false,
-        crossDomain: true,
-        url: envService.read('apiUrl') + envService.read('menuPath'),
-        data: {meal: 'd'},
-        timeout: envService.read('timeout')
-      }).then(handleSuccess, handleError('Error'));
-    }
-
-    function handleSuccess(result) {
-      return result.data;
-    }
-
-    function handleError(error) {
-      return function () {
-        return {success: false, message: error};
-      };
-    }
   }])
 
   .service('Take', ['envService', '$http', function (envService, $http) {

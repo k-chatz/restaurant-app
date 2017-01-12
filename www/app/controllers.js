@@ -81,7 +81,7 @@ angular.module('restaurant.controllers', [])
   })
 
   /*Tab Controllers*/
-  .controller('menuTabCtrl', function ($scope, $state, $ionicTabsDelegate, $http, $ionicPopup, Status, Menu, Take, Give) {
+  .controller('menuTabCtrl', function ($rootScope, $scope, $state, $ionicTabsDelegate, Status, Menu, Take, Give) {
     console.info("Controller execute: menuTabCtrl");
 
     $scope.goForward = function () {
@@ -98,11 +98,13 @@ angular.module('restaurant.controllers', [])
       }
     };
 
+    var watcher = null;
 
     $scope.status = {
       time: null,
       meals: {
         b: {
+          progress: null,
           o_number: null,
           sec_left: null,
           q_question: null,
@@ -112,6 +114,7 @@ angular.module('restaurant.controllers', [])
           offers: null
         },
         l: {
+          progress: null,
           o_number: null,
           sec_left: null,
           q_question: null,
@@ -121,6 +124,7 @@ angular.module('restaurant.controllers', [])
           offers: null
         },
         d: {
+          progress: null,
           o_number: null,
           sec_left: null,
           q_question: null,
@@ -130,10 +134,19 @@ angular.module('restaurant.controllers', [])
           offers: null
         }
       },
-      priority: {
-        b: [],
-        l: [],
-        d: []
+      menu: {
+        b:{
+          meal: null,
+          date: null
+        },
+        l:{
+          meal: null,
+          date: null
+        },
+        d:{
+          meal: null,
+          date: null
+        }
       }
     };
 
@@ -142,9 +155,7 @@ angular.module('restaurant.controllers', [])
       watcher = $scope.$watch(function () {
         return Status.data;
       }, function (data) {
-        if (data.time != null && data.success != false) {
-          $scope.status = data;
-        }
+        $scope.status = data;
       }, true);
     });
 
@@ -164,7 +175,6 @@ angular.module('restaurant.controllers', [])
         Status.refresh();
       });
     };
-
   })
 
 
