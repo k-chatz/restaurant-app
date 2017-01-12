@@ -311,7 +311,8 @@ angular.module('restaurant.services', [])
     }
   }])
 
-  .service('User', ['envService', '$cordovaSpinnerDialog', '$cordovaToast', '$q', '$http', 'Facebook', 'USER_ROLES', function (envService, $cordovaSpinnerDialog, $cordovaToast, $q, $http, Facebook, USER_ROLES) {
+  .service('User', ['envService', '$rootScope','$cordovaSpinnerDialog', '$cordovaToast', '$q', '$http', 'Facebook', 'USER_ROLES',
+    function (envService, $rootScope, $cordovaSpinnerDialog, $cordovaToast, $q, $http, Facebook, USER_ROLES) {
 
     var LOCAL_TOKEN_KEY = null;
     var authToken;
@@ -379,7 +380,7 @@ angular.module('restaurant.services', [])
             timeout: 30000
           }).then(function (success) {
             service.user = success.data.user;
-            storeUserCredentials(success.data.jwt);
+            storeUserCredentials(success.data.user.accessToken);
             info.resolve(service.user);
             $cordovaSpinnerDialog.hide();
           }, function (fail) {
@@ -450,7 +451,7 @@ angular.module('restaurant.services', [])
         data: {newNumber: numberBase64},
         timeout: envService.read('timeout')
       }).then(function (s) {
-        if(s.data.user.number != null && s.data.user.number != undefined) {
+        if (s.data.user.number != null && s.data.user.number != undefined) {
           service.user.number = s.data.user.number;
           service.user.role = s.data.user.role;
         }
@@ -473,6 +474,7 @@ angular.module('restaurant.services', [])
       authToken = token;
       $http.defaults.headers.common['authorization'] = 'Bearer ' + token;
       $http.defaults.headers.common['Content-Type'] = 'application/json';
+      $rootScope.$broadcast('userIsAuthenticated', true);
     }
 
     function loadUserCredentials() {
@@ -496,6 +498,7 @@ angular.module('restaurant.services', [])
     }
 
     function destroyUserCredentials() {
+      $rootScope.$broadcast('userIsAuthenticated', false);
       service.user = {};
       authToken = undefined;
       service.online = false;
@@ -517,29 +520,32 @@ angular.module('restaurant.services', [])
 
   /*:::::User authorization:::::*/
   .factory('Interceptor', ['$rootScope', '$q', 'AUTH_EVENTS', function ($rootScope, $q, AUTH_EVENTS) {
-    var interceptor = {
+    return {
       request: function (config) {
         $rootScope.$broadcast('processing', {status: true, url: config.url});
         config.requestTimestamp = new Date().getTime();
         return config;
       },
+
       response: function (response) {
         $rootScope.$broadcast('processing', {status: false, url: null});
         response.config.responseTimestamp = new Date().getTime();
         return response;
       },
+
       responseError: function (response) {
         $rootScope.$broadcast('processing', {status: false, url: null});
         $rootScope.$broadcast({
+          400: AUTH_EVENTS.badRequest,
           401: AUTH_EVENTS.notAuthenticated,
           403: AUTH_EVENTS.notAuthorized,
           500: AUTH_EVENTS.internalServerError
-        }[response.status], response.data.error.message);
+        }[response.status], response.data);
         //alert( JSON.stringify(response,null,"    ") );
         return $q.reject(response);
       }
+
     };
-    return interceptor;
   }])
 
   .config(['$httpProvider', function ($httpProvider) {

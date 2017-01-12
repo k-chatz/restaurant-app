@@ -67,7 +67,7 @@ angular.module('restaurant', [
           }
         },
         data: {
-          authorizedRoles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+          roles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
         }
       })
 
@@ -81,7 +81,7 @@ angular.module('restaurant', [
           }
         },
         data: {
-          authorizedRoles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
+          roles: [USER_ROLES.admin, USER_ROLES.visitor, USER_ROLES.boarder]
         }
       })
 
@@ -95,7 +95,7 @@ angular.module('restaurant', [
           }
         },
         data: {
-          authorizedRoles: [USER_ROLES.boarder]
+          roles: [USER_ROLES.boarder]
         }
       })
 
@@ -145,34 +145,35 @@ angular.module('restaurant', [
 
   .run(function ($rootScope, $state, User, Status, AUTH_EVENTS, $cordovaToast) {
     $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-      if ('data' in next && 'authorizedRoles' in next.data) {
-        var authorizedRoles = next.data.authorizedRoles;
-        if (!User.isAuthorized(authorizedRoles)) {
-          event.preventDefault();
-          $state.go($state.current, {}, {reload: true});
+      if ('data' in next && 'roles' in next.data) {
+        var roles = next.data.roles;
+
+        if (!User.isAuthorized(roles)) {
 
           if(User.isAuthenticated()){
             switch (next.name){
               case 'tab.give':
-                $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, "Scan your number in settings to access this resource.");
+                event.preventDefault();
+                $state.go('scan');
+                $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, {error: {message:'Scan your number to access this resource.'}});
                 break;
             }
           }
           else {
-            $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, "To access this resource, you must login first!");
+            event.preventDefault();
+            $state.go($state.current, {}, {reload: true});
+            $rootScope.$broadcast(AUTH_EVENTS.notAuthorized, {error: {message:'To access this resource, you must login first!'}});
           }
         }
       }
 
       if (!User.isAuthenticated()) {
-        Status.stop();
         if (["login", "help", "about"].indexOf(next.name) == -1) {
           event.preventDefault();
           $state.go('login');
         }
       }
       else {
-        Status.start(10000);
         if (next.name == 'login') {
           event.preventDefault();
           $state.go('tab.menu');
@@ -233,7 +234,7 @@ angular.module('restaurant', [
     });
     envServiceProvider.check();
 
-    envServiceProvider.set('development');
+    envServiceProvider.set('production');
 
   })
 

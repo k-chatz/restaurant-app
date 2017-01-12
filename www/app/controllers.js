@@ -1,7 +1,7 @@
 angular.module('restaurant.controllers', [])
 
 
-  .controller('mainCtrl', function ($rootScope, $scope, $state, $cordovaToast, User, AUTH_EVENTS) {
+  .controller('mainCtrl', function ($rootScope, $scope, $state, $cordovaToast, Status, User, AUTH_EVENTS) {
     console.info("Controller execute: mainCtrl'");
 
     //ionic.Platform.exitApp(); // stops the app
@@ -23,20 +23,24 @@ angular.module('restaurant.controllers', [])
       $scope.processing = v.status;
     });
 
-    $scope.$on(AUTH_EVENTS.notAuthorized, function (event, message) {
-      $cordovaToast.show('Forbidden!\n' + message, 'long', 'center');
+    $scope.$on(AUTH_EVENTS.badRequest, function (event, data) {
+      $cordovaToast.show('..::Bad Request::..\n' + data.error.message, 'long', 'center');
     });
 
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, message) {
-      $cordovaToast.show('Session expired!\nYou have to login again...', 'long', 'center').then(function () {
+    $scope.$on(AUTH_EVENTS.notAuthorized, function (event, data) {
+      $cordovaToast.show('..::Forbidden::..\n' + data.error.message, 'long', 'center');
+    });
+
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function (event, data) {
+      $cordovaToast.show('..::Not Authenticated::..\n' + data.error.message + '\n\nYour session expired, you have to login again...', 'long', 'center').then(function () {
         User.doLogout().then(function () {
           $state.go('login');
         });
       });
     });
 
-    $scope.$on(AUTH_EVENTS.internalServerError, function (event, message) {
-      $cordovaToast.show('Internal Server Error!\n' + message, 'long', 'center');
+    $scope.$on(AUTH_EVENTS.internalServerError, function (event, data) {
+      $cordovaToast.show('..::Internal Server Error::..\n' + data.error.message, 'long', 'center');
     });
 
 
@@ -67,7 +71,7 @@ angular.module('restaurant.controllers', [])
             }
           });
         }, function (error) {
-          $cordovaToast.show('Oops something went wrong!\n'+ error.errorMessage +'\n\nPlease try again later...', 'long', 'center');
+          $cordovaToast.show('Oops something went wrong!\n' + error.errorMessage + '\n\nPlease try again later...', 'long', 'center');
         })
       }
       else {
