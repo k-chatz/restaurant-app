@@ -67,63 +67,48 @@ angular.module('restaurant.services', [])
 
   .service('Status', ['envService', '$rootScope', '$http', '$interval', function (envService, $rootScope, $http, $interval) {
     var clock = null;
-    var service = {};
-    service.start = start;
-    service.stop = stop;
-    service.refresh = refresh;
-    service.data = {
-      time: null,
-      meals: {
-        b: {
-          o_number: null,
-          sec_left: null,
-          q_today: null,
-          q_question: null,
-          questions: null,
-          o_offer: null,
-          offers: null
-        },
-        l: {
-          o_number: null,
-          sec_left: null,
-          q_today: null,
-          q_question: null,
-          questions: null,
-          o_offer: null,
-          offers: null
-        },
-        d: {
-          o_number: null,
-          sec_left: null,
-          q_today: null,
-          q_question: null,
-          questions: null,
-          o_offer: null,
-          offers: null
-        }
-      },
-      priority: {
-        b: [],
-        l: [],
-        d: []
-      }
-    };
-    return service;
+    var tab = 'menu';
+    var duration = null;
 
-    function refresh() {
-      info().then(function (result) {
-        if (result.success != false)
-          service.data = result;
+    var service = {
+      view: view,
+      start: start,
+      stop: stop,
+      refresh: refresh,
+      data: {}
+    };
+
+    function view(t) {
+      tab = t;
+      refresh();
+    }
+
+    function info() {
+      $http({
+        url: envService.read('apiUrl') + envService.read('statusInfoPath'),
+        method: 'GET',
+        cache: false,
+        crossDomain: true,
+        params: {tab: tab},
+        timeout: envService.read('timeout')
+      }).then(function (s) {
+        service.data = s.data;
+      }, function (f) {
+        //alert('Stupid alert: ' + JSON.stringify(f));
       });
     }
 
-    function start(msec) {
+    function refresh() {
+      start(duration);
+    }
 
+    function start(msec) {
+      stop();
+      duration = msec;
       if (clock === null) {
-        console.log("START TIMER");
-        clock = $interval(refresh, msec);
+        clock = $interval(info, duration);
+        info();
       }
-      refresh();
     }
 
     function stop() {
@@ -133,25 +118,7 @@ angular.module('restaurant.services', [])
       }
     }
 
-    function info() {
-      return $http({
-        url: envService.read('apiUrl') + envService.read('statusInfoPath'),
-        method: 'GET',
-        cache: false,
-        crossDomain: true,
-        timeout: envService.read('timeout')
-      }).then(handleSuccess, handleError('Error'));
-    }
-
-    function handleSuccess(result) {
-      return result.data;
-    }
-
-    function handleError(error) {
-      return function () {
-        return {success: false, message: error};
-      };
-    }
+    return service;
   }])
 
   .service('Menu', ['envService', '$http', function (envService, $http) {

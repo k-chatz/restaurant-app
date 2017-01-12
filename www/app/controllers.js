@@ -6,6 +6,19 @@ angular.module('restaurant.controllers', [])
 
     //ionic.Platform.exitApp(); // stops the app
 
+    if (User.isAuthenticated()) {
+      Status.start(10000);
+    }
+
+    $scope.$on('userIsAuthenticated', function (event, is) {
+      if (is) {
+        Status.start(10000);
+      }
+      else {
+        Status.stop();
+      }
+    });
+
     $scope.$on('processing', function (event, v) {
       $scope.processing = v.status;
     });
@@ -121,25 +134,7 @@ angular.module('restaurant.controllers', [])
     };
 
     $scope.$on('$ionicView.enter', function (e) {
-
-      Menu.breakfast().then(function (data) {
-        $scope.breakfast = data.menu.meal;
-      }, function (error) {
-        $scope.breakfast = error.message;
-      });
-
-      Menu.lunch().then(function (data) {
-        $scope.lunch = data.menu.meal;
-      }, function (error) {
-        $scope.lunch = error.message;
-      });
-
-      Menu.dinner().then(function (data) {
-        $scope.dinner = data.menu.meal;
-      }, function (error) {
-        $scope.dinner = error.message;
-      });
-
+      Status.view('menu');
       watcher = $scope.$watch(function () {
         return Status.data;
       }, function (data) {
@@ -240,6 +235,7 @@ angular.module('restaurant.controllers', [])
       }
 
       $scope.$on('$ionicView.enter', function (e) {
+        Status.view('take');
         watcher = $scope.$watch(function () {
           return Status.data;
         }, function (data) {
@@ -352,6 +348,7 @@ angular.module('restaurant.controllers', [])
       }
 
       $scope.$on('$ionicView.enter', function (e) {
+        Status.view('give');
         watcher = $scope.$watch(function () {
           return Status.data;
         }, function (data) {
